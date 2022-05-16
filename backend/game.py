@@ -44,23 +44,28 @@ def normalize_word(word: str) -> Optional[str]:
         return None
 
 
-def generate_game(n_top_words: int = 1000) -> SemantleGame:
-    logger.info("Generating new Semantle game")
-    model = get_navec_model()
+def generate_answer() -> str:
+    navec = get_navec_model()
     frequent_words = get_frequent_words()
-    vocab: list[str] = model.vocab.words
     for attempt in range(10000):
-        answer = random.choice(vocab)
+        answer = random.choice(frequent_words)
         answer = normalize_word(answer)
-        if answer is not None and answer in vocab and answer in frequent_words:
-            break
+        if answer is not None and answer in navec:
+            logger.info(f"Answer (generated in {attempt + 1} attempt(s)): {answer}")
+            return answer
     else:
         raise RuntimeError("Didn't generate a normalizeable, frequent answer in 10000 attempts :(")
-    logger.info(f"Answer (generated in {attempt + 1} attempt(s)): {answer}")
+
+
+def generate_game(n_top_words: int = 1000) -> SemantleGame:
+    logger.info("Generating new Semantle game")
+    navec = get_navec_model()
+    vocab: list[str] = navec.vocab.words
+    answer = generate_answer()
     current_threshold_similarity = 0
     current_top_words: list[Word] = []
     for word in tqdm(vocab, unit="w"):
-        word_similarity = model.sim(word, answer)
+        word_similarity = navec.sim(word, answer)
         if word_similarity > current_threshold_similarity:
             current_top_words.append(Word(word, word_similarity))
             current_top_words.sort(key=lambda w: w.similarity, reverse=True)
@@ -74,9 +79,15 @@ def generate_game(n_top_words: int = 1000) -> SemantleGame:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    with open("games.txt", "a") as f:
+
+    with open("answers.txt", "w") as f:
+        for _ in range(1000):
+            print(generate_answer(), file=f)
+
+
+    with open("games.txt", "w") as f:
         for _ in range(10):
             f.write("\n\n")
             game = generate_game(30)
             for w in game:
-                f.write(f"{w.word : >50} {w.similarity}\n")
+                f.write(f"{w.word : >30} {w.similarity}\n")

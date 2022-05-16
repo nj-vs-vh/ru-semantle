@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import re
 import zipfile
 import wget
 from typing import Optional
@@ -43,17 +44,17 @@ def get_pymorph_model() -> MorphAnalyzer:
 
 
 
-CORPUS_URL = "https://ruscorpora.ru/new/ngrams/1grams-3.zip"
-CORPUS_ZIP_FILE = MODELS_DIR / "corpus.zip"
-CORPUS_FILE = MODELS_DIR / "1grams-3.txt"
+CORPUS_URL = "https://ruscorpora.ru/new/ngrams/3grams-3.zip"
+CORPUS_ZIP_FILE = MODELS_DIR / "3grams-3.zip"
+CORPUS_FILE = MODELS_DIR / "3grams-3.txt"
 N_FREQUENT_WORDS = 100000  # 100K most frequent words in Russian that may be chosen as answers
-_FREQUENT_WORDS_CORPUS: Optional[set[str]] = None
+_FREQUENT_WORDS_CORPUS: Optional[list[str]] = None
 
 
-def get_frequent_words() -> set[str]:
+def get_frequent_words() -> list[str]:
     global _FREQUENT_WORDS_CORPUS
     if _FREQUENT_WORDS_CORPUS is None:
-        _FREQUENT_WORDS_CORPUS = set()
+        corpus = set()
         if not CORPUS_ZIP_FILE.exists():
             logger.info("Downloading RusCorpora word frequency list...")
             wget.download(CORPUS_URL, out=str(CORPUS_ZIP_FILE))
@@ -61,10 +62,14 @@ def get_frequent_words() -> set[str]:
             zf.extractall(MODELS_DIR)
         if not CORPUS_FILE.exists():
             raise RuntimeError("Error downloading and extracting RusCorpora word frequency list")
+        wordlike_re = re.compile(r"\w{4,}$")
         with open(CORPUS_FILE, "r") as f:
-            for idx, line in enumerate(f):
-                if idx > N_FREQUENT_WORDS:
+            for line in f:
+                for w in line.split("\t")[1:]:
+                    w = w.strip()
+                    if wordlike_re.match(w):
+                        corpus.add(w)
+                if len(corpus) > N_FREQUENT_WORDS:
                     break
-                word = " ".join(line.split("\t")[1:])
-                _FREQUENT_WORDS_CORPUS.add(word.strip().lower())
+        _FREQUENT_WORDS_CORPUS = list(corpus)
     return _FREQUENT_WORDS_CORPUS
