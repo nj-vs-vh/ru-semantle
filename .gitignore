@@ -209,3 +209,6 @@ cython_debug/
 
 venv
 models
+data
+*.txt
+.DS*

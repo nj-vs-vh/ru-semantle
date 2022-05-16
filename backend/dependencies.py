@@ -4,6 +4,7 @@ import wget
 from typing import Optional
 
 from navec import Navec
+from pymorphy2 import MorphAnalyzer
 
 
 logger = logging.getLogger(__name__)
@@ -26,3 +27,14 @@ def get_navec_model() -> Navec:
         logger.info("Reading Navec model from disk...")
         _NAVEC_MODEL = Navec.load(NAVEC_MODEL_PATH)
     return _NAVEC_MODEL
+
+
+
+_PYMORPH_MODEL: Optional[MorphAnalyzer] = None
+
+
+def get_pymorph_model() -> MorphAnalyzer:
+    global _PYMORPH_MODEL
+    if _PYMORPH_MODEL is None:
+        _PYMORPH_MODEL = MorphAnalyzer()
+    return _PYMORPH_MODEL
