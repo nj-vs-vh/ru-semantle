@@ -8,7 +8,7 @@ class Word(TypedDict):
 
 class TopWord(Word):
     rating: int  # in the list of top words
-    local_euclidian_coord: tuple[float, float]  # used for visualization
+    local_coords: tuple[float, float]  # used for visualization
 
 
 SemantleGame = tuple[int, list[TopWord]]

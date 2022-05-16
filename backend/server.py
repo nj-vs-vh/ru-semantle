@@ -4,7 +4,7 @@ from aiohttp import web
 from redis import Redis
 
 from backend.dependencies import get_navec_model
-from backend.game.types import Word
+from backend.game.types_ import Word
 from backend.game.storage import GameStorage
 from backend.admin import requires_admin_token
 from backend import config

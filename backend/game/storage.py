@@ -5,7 +5,7 @@ from redis import Redis
 import asyncio
 import pytz
 
-from backend.game.types import SemantleGame, TopWord
+from backend.game.types_ import SemantleGame, TopWord
 from backend.game.generate import generate_game
 
 
