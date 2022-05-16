@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from pymorphy2.analyzer import Parse
 
-from backend.dependencies import get_navec_model, get_pymorph_model
+from backend.dependencies import get_frequent_words, get_navec_model, get_pymorph_model
 
 
 logger = logging.getLogger(__name__)
@@ -47,14 +47,15 @@ def normalize_word(word: str) -> Optional[str]:
 def generate_game(n_top_words: int = 1000) -> SemantleGame:
     logger.info("Generating new Semantle game")
     model = get_navec_model()
+    frequent_words = get_frequent_words()
     vocab: list[str] = model.vocab.words
     for attempt in range(10000):
         answer = random.choice(vocab)
         answer = normalize_word(answer)
-        if answer is not None and answer in vocab:
+        if answer is not None and answer in vocab and answer in frequent_words:
             break
     else:
-        raise RuntimeError("Didn't generate a normalizeable answer in 10000 attempts :(")
+        raise RuntimeError("Didn't generate a normalizeable, frequent answer in 10000 attempts :(")
     logger.info(f"Answer (generated in {attempt + 1} attempt(s)): {answer}")
     current_threshold_similarity = 0
     current_top_words: list[Word] = []
