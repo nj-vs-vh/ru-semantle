@@ -52,11 +52,11 @@ def generate_game(n_top_words: int = 1000) -> SemantleGame:
     for word in tqdm(vocab, unit="w"):
         similarity = navec.sim(word, answer)
         if similarity > current_threshold_similarity:
-            current_top_words.append(Word(word=word, similarity=similarity))
-            current_top_words.sort(key=lambda w: w.similarity, reverse=True)
+            current_top_words.append(Word(word=word, similarity=float(similarity)))
+            current_top_words.sort(key=lambda w: w["similarity"], reverse=True)
             if len(current_top_words) > n_top_words:
                 current_top_words.pop(-1)
-                current_threshold_similarity = current_top_words[-1].similarity
+                current_threshold_similarity = current_top_words[-1]['similarity']
 
     return n_top_words, current_top_words
 
@@ -75,4 +75,4 @@ if __name__ == "__main__":
             f.write("\n\n")
             game = generate_game(30)
             for w in game:
-                f.write(f"{w.word : >30} {w.similarity}\n")
+                f.write(f"{w['word'] : >30} {w['similarity']}\n")

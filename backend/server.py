@@ -1,5 +1,5 @@
 import asyncio
-from typing import TypedDict
+import logging
 from aiohttp import web
 from redis import Redis
 
@@ -9,25 +9,23 @@ from backend.game.storage import GameStorage
 from backend import config
 
 
-class AppExtensions(TypedDict):
-    storage: GameStorage
+def create_app() -> web.Application:
+    logging.basicConfig(level=logging.INFO)
 
+    app = web.Application(client_max_size=512)
 
-class Application(web.Application, AppExtensions):
-    pass
-
-
-def create_app() -> Application:
-    app: Application = web.Application(client_max_size=512)
-
-    async def init_game_storage(app: Application):
+    async def init_game_storage(app: web.Application):
         redis = Redis.from_url(config.REDIS_URL)
         game_storage = GameStorage(redis)
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(game_storage.daily_game_update())
+        loop.create_task(game_storage.daily_game_update())
         app["storage"] = game_storage
 
     app.on_startup.append(init_game_storage)
+
+    async def dump_game(request: web.Request) -> web.Response:
+        storage: GameStorage = app["storage"]
+        return web.json_response(storage.top_words)
 
     async def guess(request: web.Request) -> web.Response:
         try:
@@ -41,11 +39,15 @@ def create_app() -> Application:
         if guess not in navec:
             return web.Response(status=404, text="Unknown word :(")
         
-        top_word = app["storage"].top_words_by_str.get(guess)
+        storage: GameStorage = app["storage"]
+        top_word = storage.top_words_by_str.get(guess)
         if top_word is not None:
             return web.json_response(data=top_word)
 
-        answer = app["storage"].answer
-        return web.json_response(data=Word(word=guess, similarity=navec.sim(answer, guess)))
+        answer = storage.answer["word"]
+        return web.json_response(data=Word(word=guess, similarity=float(navec.sim(answer, guess))))
 
     app.router.add_post("/guess", guess)
+    app.router.add_get("/dump", dump_game)
+
+    return app

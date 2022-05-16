@@ -28,12 +28,13 @@ class GameStorage:
 
     async def daily_game_update(self):
         while True:
-            now_utc = pytz.utc.localize(datetime.now())
+            now_utc = pytz.utc.localize(datetime.utcnow())
             now_local = now_utc.astimezone(self.GAME_TZ)
+            logger.info(f"Current datetime in Tbilisi: {now_local}")
             elapsed_since_midnight_sec = now_local.second + now_local.minute * 60 + now_local.hour * 3600
-            to_midnight_sec = min(86400 - elapsed_since_midnight_sec, 10)
+            to_midnight_sec = max(86400 - elapsed_since_midnight_sec, 10)
             to_midnight_hrs = to_midnight_sec / 3600
-            logger.info(f"Next game will be generated in {to_midnight_hrs:.1f} hours")
+            logger.info(f"Next game will be generated in {to_midnight_hrs:.5f} hours")
             await asyncio.sleep(to_midnight_sec)
             self.parse_game(self.generate_and_save_game())
 
@@ -42,6 +43,7 @@ class GameStorage:
         dump = json.dumps(game, ensure_ascii=False)
         dump = dump.encode("utf-8")
         self.redis.set(self.CURRENT_GAME_KEY, dump)
+        return game
 
     def load_game(self) -> SemantleGame:
         game_dump = self.redis.get(self.CURRENT_GAME_KEY)
