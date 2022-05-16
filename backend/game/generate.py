@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 import random
 import logging
 from typing import Optional
@@ -7,24 +6,10 @@ from tqdm import tqdm
 from pymorphy2.analyzer import Parse
 
 from backend.dependencies import get_frequent_words, get_navec_model, get_pymorph_model
+from backend.game.types import Word, TopWord, SemantleGame
 
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class Word:
-    word: str
-    similarity: float  # cosine similarity to answer, scaled up to [0, 100)
-
-
-@dataclass
-class TopWord(Word):
-    rating: int  # in the list of top words
-    local_euclidian_coord: tuple[float, float]  # used for visualization
-
-
-SemantleGame = list[TopWord]
 
 
 def normalize_word(word: str) -> Optional[str]:
@@ -37,7 +22,7 @@ def normalize_word(word: str) -> Optional[str]:
             return None  # avoid polysemantic words
         parse: Parse = parses[0]
         if parse.tag.POS not in {"NOUN", "VERB", "ADJF", "INFN", "PRTF", "NUMR", "NPRO"}:
-            return None  # restricting to a selected parts of speech
+            return None
         return parse.normalized.word
     except Exception as e:
         logger.warning(f"Unexpected error normalizing word '{word}': {e}")
@@ -54,7 +39,7 @@ def generate_answer() -> str:
             logger.info(f"Answer (generated in {attempt + 1} attempt(s)): {answer}")
             return answer
     else:
-        raise RuntimeError("Didn't generate a normalizeable, frequent answer in 10000 attempts :(")
+        raise RuntimeError("Didn't generate a normalizeable answer in 10000 attempts :(")
 
 
 def generate_game(n_top_words: int = 1000) -> SemantleGame:
@@ -65,9 +50,9 @@ def generate_game(n_top_words: int = 1000) -> SemantleGame:
     current_threshold_similarity = 0
     current_top_words: list[Word] = []
     for word in tqdm(vocab, unit="w"):
-        word_similarity = navec.sim(word, answer)
-        if word_similarity > current_threshold_similarity:
-            current_top_words.append(Word(word, word_similarity))
+        similarity = navec.sim(word, answer)
+        if similarity > current_threshold_similarity:
+            current_top_words.append(Word(word=word, similarity=similarity))
             current_top_words.sort(key=lambda w: w.similarity, reverse=True)
             if len(current_top_words) > n_top_words:
                 current_top_words.pop(-1)
