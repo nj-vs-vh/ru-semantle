@@ -6,6 +6,7 @@ from redis import Redis
 from backend.dependencies import get_navec_model
 from backend.game.types import Word
 from backend.game.storage import GameStorage
+from backend.admin import requires_admin_token
 from backend import config
 
 
@@ -22,6 +23,12 @@ def create_app() -> web.Application:
         app["storage"] = game_storage
 
     app.on_startup.append(init_game_storage)
+
+    @requires_admin_token
+    async def reset_game(request: web.Request) -> web.Response:
+        storage: GameStorage = app["storage"]
+        storage.reset_game()
+        return web.Response(text="Reset")
 
     async def dump_game(request: web.Request) -> web.Response:
         storage: GameStorage = app["storage"]
@@ -49,5 +56,6 @@ def create_app() -> web.Application:
 
     app.router.add_post("/guess", guess)
     app.router.add_get("/dump", dump_game)
+    app.router.add_post("/reset", reset_game)
 
     return app

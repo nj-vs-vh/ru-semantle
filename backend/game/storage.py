@@ -18,9 +18,9 @@ class GameStorage:
 
     def __init__(self, redis: Redis):
         self.redis = redis
-        self.parse_game(self.load_game())
+        self._parse_game(self._load_game())
 
-    def parse_game(self, game: SemantleGame):
+    def _parse_game(self, game: SemantleGame):
         self.top_word_count = game[0]
         self.answer = game[1][0]
         self.top_words = game[1]
@@ -36,18 +36,21 @@ class GameStorage:
             to_midnight_hrs = to_midnight_sec / 3600
             logger.info(f"Next game will be generated in {to_midnight_hrs:.5f} hours")
             await asyncio.sleep(to_midnight_sec)
-            self.parse_game(self.generate_and_save_game())
+            self._parse_game(self._new_game())
 
-    def generate_and_save_game(self) -> SemantleGame:
+    def reset_game(self):
+        self._parse_game(self._new_game())
+
+    def _new_game(self) -> SemantleGame:
         game = generate_game()
         dump = json.dumps(game, ensure_ascii=False)
         dump = dump.encode("utf-8")
         self.redis.set(self.CURRENT_GAME_KEY, dump)
         return game
 
-    def load_game(self) -> SemantleGame:
+    def _load_game(self) -> SemantleGame:
         game_dump = self.redis.get(self.CURRENT_GAME_KEY)
         if game_dump is None:
-            return self.generate_and_save_game()
+            return self._new_game()
         game_size, top_words = json.loads(game_dump.decode("utf-8"))
         return game_size, top_words
