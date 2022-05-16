@@ -1,7 +1,6 @@
-from backend.dependencies import get_pymorph_model
+from aiohttp import web
+from backend.server import create_app
+from backend import config
 
 
-ma = get_pymorph_model()
-
-
-print(ma.parse("печь"))
+web.run_app(create_app(), port=config.PORT)

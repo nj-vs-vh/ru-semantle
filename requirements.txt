@@ -5,3 +5,5 @@ tqdm==4.64.0
 wget==3.2
 pymorphy2==0.9.1
 pymorphy2-dicts-ru==2.4.417127.4579844
+redis==4.3.1
+pytz==2022.1

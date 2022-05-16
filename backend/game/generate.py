@@ -58,7 +58,7 @@ def generate_game(n_top_words: int = 1000) -> SemantleGame:
                 current_top_words.pop(-1)
                 current_threshold_similarity = current_top_words[-1].similarity
 
-    return current_top_words
+    return n_top_words, current_top_words
 
 
 if __name__ == "__main__":

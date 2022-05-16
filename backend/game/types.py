@@ -11,4 +11,4 @@ class TopWord(Word):
     local_euclidian_coord: tuple[float, float]  # used for visualization
 
 
-SemantleGame = list[TopWord]
+SemantleGame = tuple[int, list[TopWord]]
