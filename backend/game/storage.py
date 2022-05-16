@@ -5,7 +5,7 @@ from redis import Redis
 import asyncio
 import pytz
 
-from backend.game.types_ import SemantleGame, TopWord
+from backend.game.types_ import GameConfig, SemantleGame, TopWord
 from backend.game.generate import generate_game
 
 
@@ -16,7 +16,8 @@ class GameStorage:
     CURRENT_GAME_KEY = "ru-semantle-current-game"
     GAME_TZ = pytz.timezone("Asia/Tbilisi")
 
-    def __init__(self, redis: Redis):
+    def __init__(self, config: GameConfig, redis: Redis):
+        self.config = config
         self.redis = redis
         self._parse_game(self._load_game())
 
@@ -42,7 +43,7 @@ class GameStorage:
         self._parse_game(self._new_game())
 
     def _new_game(self) -> SemantleGame:
-        game = generate_game()
+        game = generate_game(n_top_words=self.config.n_top_words, local_dimensions=self.config.local_dimensions)
         dump = json.dumps(game, ensure_ascii=False)
         dump = dump.encode("utf-8")
         self.redis.set(self.CURRENT_GAME_KEY, dump)

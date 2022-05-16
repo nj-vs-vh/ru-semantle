@@ -43,7 +43,6 @@ def get_pymorph_model() -> MorphAnalyzer:
     return _PYMORPH_MODEL
 
 
-
 CORPUS_URL = "https://ruscorpora.ru/new/ngrams/3grams-3.zip"
 CORPUS_ZIP_FILE = MODELS_DIR / "3grams-3.zip"
 CORPUS_FILE = MODELS_DIR / "3grams-3.txt"

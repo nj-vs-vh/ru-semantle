@@ -54,7 +54,7 @@ def enhance_top_words(words: list[Word], local_dimensions: int) -> list[TopWord]
     local_vectors = pca.fit_transform(word_vectors_mat)
     logger.info(f"PCA explained variance ratio per reduced dimension: {pca.explained_variance_ratio_}")
     local_vectors -= local_vectors[0, :]  # centering at correct answer
-    local_vectors /= np.max(np.abs(local_vectors), axis=0)
+    local_vectors /= np.max(np.abs(local_vectors), axis=0)  # scaling to [-1; 1] cube
     return [
         TopWord(
             word=w["word"],
@@ -86,20 +86,18 @@ def generate_game(n_top_words: int = 1000, local_dimensions: int = 2) -> Semantl
 
 
 if __name__ == "__main__":
-    import json
-
     logging.basicConfig(level=logging.INFO)
 
-    # with open("answers.txt", "w") as f:
-    #     for _ in range(1000):
-    #         print(generate_answer(), file=f)
+    with open("answers.txt", "w") as f:
+        for _ in range(1000):
+            print(generate_answer(), file=f)
 
-    # with open("games.txt", "w") as f:
-    #     for _ in range(10):
-    #         f.write("\n\n")
-    #         game = generate_game(30)
-    #         for w in game:
-    #             f.write(f"{w['word'] : >30} {w['similarity']}\n")
+    with open("games.txt", "w") as f:
+        for _ in range(10):
+            f.write("\n\n")
+            game = generate_game(30)
+            for w in game:
+                f.write(f"{w['word'] : >30} {w['similarity']}\n")
 
     from matplotlib import pyplot as plt
 

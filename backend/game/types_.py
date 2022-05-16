@@ -1,3 +1,4 @@
+from dataclasses import asdict, dataclass
 from typing import TypedDict
 
 
@@ -12,3 +13,12 @@ class TopWord(Word):
 
 
 SemantleGame = tuple[int, list[TopWord]]
+
+
+@dataclass
+class GameConfig:
+    n_top_words: int
+    local_dimensions: int
+
+    def to_json(self) -> dict:
+        return asdict(self)
