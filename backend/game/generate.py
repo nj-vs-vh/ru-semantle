@@ -1,5 +1,6 @@
 import random
 import logging
+import sys
 from typing import Optional
 import numpy as np
 from tqdm import tqdm
@@ -73,7 +74,7 @@ def generate_game(n_top_words: int = 1000, local_dimensions: int = 2) -> Semantl
     answer = generate_answer()
     current_threshold_similarity = 0
     top_current_words: list[Word] = []
-    for word in tqdm(vocab, unit="w"):
+    for word in tqdm(vocab, unit="w", file=sys.stderr):
         similarity = navec.sim(word, answer)
         if similarity > current_threshold_similarity:
             top_current_words.append(Word(word=word, similarity=float(similarity)))

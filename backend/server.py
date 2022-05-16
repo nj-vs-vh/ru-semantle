@@ -13,7 +13,10 @@ from backend import config
 def create_app() -> web.Application:
     logging.basicConfig(level=logging.INFO)
 
-    app = web.Application(client_max_size=512)
+    app_kwargs = {"client_max_size": 512}
+    if config.IS_PROD:
+        app_kwargs["access_log"] = None
+    app = web.Application(**app_kwargs)
 
     async def init_game_storage(app: web.Application):
         game_config = GameConfig(n_top_words=1000, local_dimensions=2)
