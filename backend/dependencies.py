@@ -61,7 +61,7 @@ def get_frequent_words() -> list[str]:
             zf.extractall(MODELS_DIR)
         if not CORPUS_FILE.exists():
             raise RuntimeError("Error downloading and extracting RusCorpora word frequency list")
-        wordlike_re = re.compile(r"\w{4,}$")
+        wordlike_re = re.compile(r"\w{3,}$")
         with open(CORPUS_FILE, "r") as f:
             for line in f:
                 for w in line.split("\t")[1:]:
