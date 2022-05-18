@@ -7,22 +7,49 @@ html, body {
 body {
 	color: #333;
 	margin: 0;
-	padding: 8px;
+	padding: 10px;
 	box-sizing: border-box;
 	font-family: -apple-system, Lato, Montserrat, Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
+.page {
+	width: 100%;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.page-text {
+	max-width: max(700px, 60vw);
+	align-self: left;
+}
+
+#lang {
+	font-weight: 200;
+}
+
+.footer {
+	border-top: #333 1px solid;
+	padding: 1vh 0;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	height: 7vh;
+	align-items: center;
+}
+
 a {
-	color: rgb(0,100,200);
+	color: #003cc8;
 	text-decoration: none;
+	transition: all 1s;
 }
 
 a:hover {
-	text-decoration: underline;
-}
-
-a:visited {
-	color: rgb(0,80,160);
+	color: #000fe1;
+	transition: all 1s;
 }
 
 label {
@@ -44,20 +71,17 @@ input:disabled {
 	color: #ccc;
 }
 
-button {
-	color: #333;
-	background-color: #f4f4f4;
+#play {
+	color: #fff;
+	font-weight: 600;
+	border-radius: 10px;
+	background-color: #1d2ad5;
 	outline: none;
+	cursor: pointer;
+	padding: 2vh 4vh;
+	margin-top: 4vh;
 }
 
-button:disabled {
-	color: #999;
-}
-
-button:not(:disabled):active {
-	background-color: #ddd;
-}
-
-button:focus {
-	border-color: #666;
+#play:hover {
+	background-color: #2156dd;
 }

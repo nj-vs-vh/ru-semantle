@@ -3,17 +3,31 @@
 <head>
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
-
-	<title>Semantle RU</title>
-
+	<title>RUSemantle</title>
 	<!-- <link rel='icon' type='image/png' href='/favicon.png'> -->
-	<link rel='stylesheet' href='/global.css'>
-	<link rel='stylesheet' href='/build/bundle.css'>
-
-	<script defer src='/build/bundle.js'></script>
+	<link rel='stylesheet' href='./global.css'>
 </head>
 
 <body>
-	Please enable javascript to run this app
+	<div class="page">
+		<h1><span id="lang">ru-</span><span>semantle</span></h1>
+		<div class="page-text">
+			<p>
+				Русскоязычный клон <a href="https://semantle.com/" target="_blank">Semantle</a> — 
+				аналога Wordle, основанного на семантической близости слов.
+			</p>
+			<p>
+				Использованы векторные представления слов из
+				<a href="https://github.com/natasha/navec" target="_blank">Navec</a>,
+				морфологический анализатор <a href="https://pymorphy2.readthedocs.io/en/stable/" target="_blank">pymorphy2</a>
+				и список самых частотных 3-грамм из <a href="https://ruscorpora.ru/page/corpora-freq/" target="_blank">RusCorpora</a>.
+			</p>
+		</div>
+		<a id="play" href="play">Играть</a>
+	</div>
+	<div class="footer">
+		<span>Исходный код на <a href="https://github.com/nj-vs-vh/ru-semantle" target="_blank">github</a></span>
+		<span><a href="mailto:gosha.vaiman@gmail.com?subject=ru-semantle">Связаться</a> с автором</span>
+	</div>
 </body>
 </html>
