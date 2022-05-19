@@ -12,7 +12,7 @@ export async function guess(word: string): Promise<WordGuessResult> {
             body: JSON.stringify({ guess: word })
         }
     )
-    if (!resp.ok) {
+    if (resp.ok) {
         const wg: WordGuess = JSON.parse(await resp.text());
         return wg;
     } else {
@@ -23,7 +23,7 @@ export async function guess(word: string): Promise<WordGuessResult> {
 
 export async function getRandomWords(): Promise<string[] | null> {
     const resp = await fetch(`${baseUrl}/random-words`)
-    if (!resp.ok) {
+    if (resp.ok) {
         return JSON.parse(await resp.text());
     } else {
         return null;
