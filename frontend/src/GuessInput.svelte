@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { getRandomWords, guessWord } from "./api";
+    import { getRandomWords } from "./api";
     import { sleep } from "./utils";
+    import { createEventDispatcher } from "svelte";
+
+    const dispatch = createEventDispatcher<{guess:{word:string}}>();
 
     let currentGuess = "";
     let suggestion = "";
-    const GUESS_BUTTON_READY_TEXT = "Проверить";
-    let guessButtonText = GUESS_BUTTON_READY_TEXT;
 
     async function suggestWords() {
         await sleep(30);
@@ -28,22 +29,10 @@
         }
     }
 
-    function animateLoading() {
-        guessButtonText = " ";
-        return setInterval(() => {
-            guessButtonText =
-                guessButtonText.length < 3 ? guessButtonText + "." : " ";
-
-        }, 0.2 * 1000);
-    }
-
     function guessWordClicked(event: MouseEvent) {
-        const timerId = animateLoading();
-        guessWord(currentGuess).then(
-            () => {
-                clearInterval(timerId);
-            }
-        );
+        dispatch("guess", {
+            word: currentGuess,
+        });
     }
 
     suggestWords();
@@ -62,7 +51,7 @@
         type="submit"
         on:click|preventDefault={guessWordClicked}
     >
-        {guessButtonText}
+        Проверить
     </button>
 </form>
 
