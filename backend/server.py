@@ -1,8 +1,10 @@
 import asyncio
 import logging
 import random
-from aiohttp import web
+from aiohttp import web, hdrs
 from redis import Redis
+
+from aiohttp.typedefs import Handler
 
 from backend.dependencies import get_navec_model
 from backend.game.types_ import GameConfig, Word
@@ -16,6 +18,8 @@ def create_app() -> web.Application:
 
     app = web.Application(client_max_size=512)
 
+    # additional resources initialization
+
     async def init_game_storage(app: web.Application):
         game_config = GameConfig(n_top_words=1000, local_dimensions=2)
         game_storage = GameStorage(config=game_config, redis=Redis.from_url(config.REDIS_URL))
@@ -25,6 +29,18 @@ def create_app() -> web.Application:
         app["config"] = game_config
 
     app.on_startup.append(init_game_storage)
+
+    # middlewares
+
+    @web.middleware
+    async def cors_middleware(request: web.Request, handler: Handler):
+        resp = await handler(request)
+        resp.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = "https://ru-semantle.surge.sh"
+        return resp
+    
+    app.middlewares.append(cors_middleware)
+
+    # routes
 
     @requires_admin_token
     async def reset_game(request: web.Request) -> web.Response:
