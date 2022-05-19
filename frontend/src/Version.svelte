@@ -2,6 +2,6 @@
 
 <style>
     #version-span-inner {
-        color: rgb(109, 109, 109);
+        color: rgb(122, 122, 122);
     }
 </style>
