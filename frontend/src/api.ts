@@ -3,7 +3,7 @@ import type { WordGuess, WordGuessResult } from "./types";
 const baseUrl = "https://ru-semantle.herokuapp.com";
 
 
-export async function guess(word: string): Promise<WordGuessResult> {
+export async function guessWord(word: string): Promise<WordGuessResult> {
     const resp = await fetch(
         `${baseUrl}/guess`,
         {

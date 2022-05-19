@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { getRandomWords } from "./api";
+    import { getRandomWords, guessWord } from "./api";
     import { sleep } from "./utils";
-    
-    let guess = "";
 
+    let currentGuess = "";
     let suggestion = "";
+    const GUESS_BUTTON_READY_TEXT = "Проверить";
+    let guessButtonText = GUESS_BUTTON_READY_TEXT;
 
     async function suggestWords() {
         await sleep(30);
@@ -19,7 +20,7 @@
                 }
             }
             const newSuggestion = randomWords.pop();
-            suggestion = "";
+            suggestion = "например, ";
             for (let ch of newSuggestion) {
                 suggestion += ch;
                 await sleep(0.1);
@@ -27,16 +28,42 @@
         }
     }
 
-    function alert(event: MouseEvent) {
-        window.alert(guess);
+    function animateLoading() {
+        guessButtonText = " ";
+        return setInterval(() => {
+            guessButtonText =
+                guessButtonText.length < 3 ? guessButtonText + "." : " ";
+
+        }, 0.2 * 1000);
+    }
+
+    function guessWordClicked(event: MouseEvent) {
+        const timerId = animateLoading();
+        guessWord(currentGuess).then(
+            () => {
+                clearInterval(timerId);
+            }
+        );
     }
 
     suggestWords();
 </script>
 
 <form class="container">
-    <input type="text" id="lname" name="guess" bind:value={guess} placeholder={suggestion}>
-    <button class="btn-primary" type="submit" on:click|preventDefault={alert}>Проверить</button>
+    <input
+        type="text"
+        id="lname"
+        name="guess"
+        bind:value={currentGuess}
+        placeholder={suggestion}
+    />
+    <button
+        class="btn-primary"
+        type="submit"
+        on:click|preventDefault={guessWordClicked}
+    >
+        {guessButtonText}
+    </button>
 </form>
 
 <style>
@@ -49,7 +76,7 @@
         min-height: 1.5em;
         margin-top: 10px;
         font-size: larger;
-        margin-right: 10px;
+        margin-right: 5px;
     }
 
     input::placeholder {
@@ -57,7 +84,10 @@
     }
 
     button {
+        flex-grow: 3;
         margin-top: 10px;
         font-size: medium;
+        margin-right: 5px;
+        min-width: 20%;
     }
 </style>
