@@ -7,7 +7,6 @@ import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import replace from '@rollup/plugin-replace';
-import { exec } from 'child_process';
 
 let gitTag = process.env.GIT_TAG;
 console.log(`Building with version ${gitTag}`);
@@ -45,7 +44,8 @@ export default {
 	},
 	plugins: [
 		replace({
-			buildVersion: gitTag
+			buildVersion: gitTag,
+			preventAssignment: true,
 		}),
 		svelte({
 			preprocess: sveltePreprocess({ sourceMap: !production }),
