@@ -6,7 +6,8 @@ from redis import Redis
 
 from aiohttp.typedefs import Handler
 
-from backend.dependencies import get_navec_model
+from backend.dependencies import get_navec_model, get_pymorph_model
+from backend.game.generate import normalize_word
 from backend.game.types_ import GameConfig, Word
 from backend.game.storage import GameStorage
 from backend.admin import requires_admin_token
@@ -77,8 +78,12 @@ def create_app() -> web.Application:
         return web.json_response(data=Word(word=guess, similarity=float(navec.sim(answer, guess))))
 
     async def random_words(request: web.Request) -> web.Response:
-        navec = get_navec_model()
-        return web.json_response(random.choices(navec.vocab.words, k=100))
+        words = []
+        for word in random.choices(get_navec_model().vocab.words, k=100):
+            normalized = normalize_word(word)
+            if normalized:
+                words.append(normalized)
+        return web.json_response(words)
 
     app.router.add_post("/guess", guess)
     app.router.add_get("/game-config", dump_config)

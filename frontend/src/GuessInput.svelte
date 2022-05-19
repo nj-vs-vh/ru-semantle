@@ -8,8 +8,8 @@
 
     async function suggestWords() {
         await sleep(30);
-        // let randomWords: string[] = [];
-        let randomWords: string[] = ["раз", "два", "примерæ"];
+        let randomWords: string[] = [];
+        // let randomWords: string[] = ["раз", "два", "пример"];
         while (true) {
             await sleep(10);
             if (randomWords.length == 0) {

@@ -15,7 +15,7 @@ from backend.game.types_ import Word, TopWord, SemantleGame
 logger = logging.getLogger(__name__)
 
 
-def _normalize_word(word: str) -> Optional[str]:
+def normalize_word(word: str) -> Optional[str]:
     try:
         ma = get_pymorph_model()
         if not ma.word_is_known(word):
@@ -37,7 +37,7 @@ def generate_answer() -> str:
     frequent_words = get_frequent_words()
     for attempt in range(10000):
         answer = random.choice(frequent_words)
-        answer = _normalize_word(answer)
+        answer = normalize_word(answer)
         if answer is not None and answer in navec:
             logger.info(f"Answer (generated in {attempt + 1} attempt(s)): {answer}")
             return answer
