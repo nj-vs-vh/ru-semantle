@@ -36,7 +36,8 @@ def create_app() -> web.Application:
     @web.middleware
     async def cors_middleware(request: web.Request, handler: Handler):
         resp = await handler(request)
-        resp.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = "https://ru-semantle.surge.sh"
+        # resp.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = "https://ru-semantle.surge.sh"
+        resp.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = "*"
         return resp
     
     app.middlewares.append(cors_middleware)
