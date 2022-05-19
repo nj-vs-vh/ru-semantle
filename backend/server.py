@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import random
 from aiohttp import web
 from redis import Redis
 
@@ -59,9 +60,14 @@ def create_app() -> web.Application:
         answer = storage.answer["word"]
         return web.json_response(data=Word(word=guess, similarity=float(navec.sim(answer, guess))))
 
+    async def random_words(request: web.Request) -> web.Response:
+        navec = get_navec_model()
+        return web.json_response(random.choices(navec.vocab.words, k=100))
+
     app.router.add_post("/guess", guess)
     app.router.add_get("/game-config", dump_config)
     app.router.add_get("/top-words", dump_top_words)
     app.router.add_post("/reset", reset_game)
+    app.router.add_get("/random-words", random_words)
 
     return app
