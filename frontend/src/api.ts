@@ -19,3 +19,13 @@ export async function guess(word: string): Promise<WordGuessResult> {
         return await resp.text();
     }
 }
+
+
+export async function getRandomWords(): Promise<string[] | null> {
+    const resp = await fetch(`${baseUrl}/random-words`)
+    if (!resp.ok) {
+        return JSON.parse(await resp.text());
+    } else {
+        return null;
+    }
+}

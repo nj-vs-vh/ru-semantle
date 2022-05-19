@@ -18,12 +18,14 @@ body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+.vcentered {
 	justify-content: center;
 }
 
-.page-text {
-	max-width: max(700px, 60vw);
-	align-self: left;
+.page-text-block {
+	width: min(100%, max(500px, 50vw));
 }
 
 #lang {
@@ -52,36 +54,24 @@ a:hover {
 	transition: all 1s;
 }
 
-label {
-	display: block;
-}
-
-input, button, select, textarea {
-	font-family: inherit;
-	font-size: inherit;
-	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
-}
-
-input:disabled {
-	color: #ccc;
+.btn-primary {
+	background-color: #1d2ad5;
+	color: #fff;
+	outline: none;
+	border: none;
+	cursor: pointer;
+	border-radius: 5px;
+	padding: 2vh 2vw;
+	font-weight: 600;
 }
 
 #play {
-	color: #fff;
 	font-weight: 600;
-	border-radius: 10px;
-	background-color: #1d2ad5;
-	outline: none;
-	cursor: pointer;
 	padding: 2vh 4vh;
 	margin-top: 4vh;
 }
 
 #play:hover {
 	background-color: #2156dd;
+	color: #fcf6e0;
 }

@@ -1,10 +1,5 @@
-import App from './App.svelte';
+import Play from './Play.svelte';
 
-const app = new App({
-	target: document.body,
-	props: {
-		name: 'world'
-	}
-});
+const play = new Play({target: document.body});
 
-export default app;
+export default play;
