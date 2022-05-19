@@ -1,0 +1,1 @@
+<span>Версия buildVersion</span>

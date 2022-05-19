@@ -1,5 +1,11 @@
 import Play from './Play.svelte';
+import Version from './Version.svelte';
 
-const play = new Play({target: document.body});
 
-export default play;
+const versionEl = document.getElementById("versionSpan");
+if (versionEl !== null)
+    new Version({target: versionEl})
+
+const playPageEl = document.getElementById("playPageBody");
+if (playPageEl !== null)
+    new Play({target: playPageEl});
