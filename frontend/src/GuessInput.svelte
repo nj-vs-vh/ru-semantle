@@ -7,17 +7,23 @@
     let suggestion = "";
 
     async function suggestWords() {
-        await sleep(1);
-        let randomWords: string[] = [];
+        await sleep(30);
+        // let randomWords: string[] = [];
+        let randomWords: string[] = ["раз", "два", "примерæ"];
         while (true) {
-            await sleep(5);
+            await sleep(10);
             if (randomWords.length == 0) {
                 randomWords = await getRandomWords();
                 if (randomWords === null) {
                     return;
                 }
             }
-            suggestion = randomWords.pop();
+            const newSuggestion = randomWords.pop();
+            suggestion = "";
+            for (let ch of newSuggestion) {
+                suggestion += ch;
+                await sleep(0.1);
+            }
         }
     }
 

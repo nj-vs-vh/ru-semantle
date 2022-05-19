@@ -1,1 +1,0 @@
-surge frontend/public ru-semantle.surge.sh
