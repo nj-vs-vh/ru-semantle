@@ -59,7 +59,7 @@ def create_app() -> web.Application:
 
     async def dump_top_words(request: web.Request) -> web.Response:
         storage: GameStorage = app["storage"]
-        return web.json_response(storage.top_words)
+        return web.json_response(storage.cached.top_words)
 
     async def guess(request: web.Request) -> web.Response:
         try:
@@ -74,11 +74,11 @@ def create_app() -> web.Application:
             return web.Response(status=404, text="Unknown word :(")
 
         storage: GameStorage = app["storage"]
-        top_word = storage.top_words_by_str.get(guess)
+        top_word = storage.cached.top_words_by_str.get(guess)
         if top_word is not None:
             return web.json_response(data=top_word)
 
-        answer = storage.answer["word"]
+        answer = storage.cached.answer["word"]
         return web.json_response(data=Word(word=guess, similarity=float(navec.sim(answer, guess))))
 
     async def random_words(request: web.Request) -> web.Response:
