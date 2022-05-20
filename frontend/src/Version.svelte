@@ -1,4 +1,4 @@
-<span>Версия <span id="version-span-inner">buildVersion</span></span>
+<span>Версия <span id="version-span-inner">buildTimeReplacedVersion</span></span>
 
 <style>
     #version-span-inner {

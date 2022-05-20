@@ -8,8 +8,22 @@
     let currentGuess = "";
     let suggestion = "";
 
+    async function typeSuggestion(newSuggestion: string) {
+        const betweenStrokesSec = 0.1;
+        while (!newSuggestion.includes(suggestion)) {
+            suggestion = suggestion.slice(0, suggestion.length - 1);
+            await sleep(betweenStrokesSec);
+        };
+        let idx = suggestion.length;
+        while (idx < newSuggestion.length) {
+            suggestion += newSuggestion[idx];
+            await sleep(betweenStrokesSec);
+            idx += 1;
+        }
+    }
+
     async function suggestWords() {
-        await sleep(30);
+        await sleep(10);
         let randomWords: string[] = [];
         // let randomWords: string[] = ["раз", "два", "пример"];
         while (true) {
@@ -20,12 +34,7 @@
                     return;
                 }
             }
-            const newSuggestion = randomWords.pop();
-            suggestion = "например, ";
-            for (let ch of newSuggestion) {
-                suggestion += ch;
-                await sleep(0.1);
-            }
+            await typeSuggestion(`например, ${randomWords.pop()}`)
         }
     }
 

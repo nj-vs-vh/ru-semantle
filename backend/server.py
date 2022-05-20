@@ -6,7 +6,7 @@ from redis import Redis
 
 from aiohttp.typedefs import Handler
 
-from backend.dependencies import get_navec_model, get_pymorph_model
+from backend.dependencies import get_navec_model
 from backend.game.generate import normalize_word
 from backend.game.types_ import GameConfig, Word
 from backend.game.storage import GameStorage
@@ -14,8 +14,11 @@ from backend.admin import requires_admin_token
 from backend import config
 
 
+logger = logging.getLogger(__name__)
+
+
 def create_app() -> web.Application:
-    logging.basicConfig(level=logging.INFO)
+    logger.info("Creating backend app")
 
     app = web.Application(client_max_size=512)
 
@@ -36,7 +39,8 @@ def create_app() -> web.Application:
     @web.middleware
     async def cors_middleware(request: web.Request, handler: Handler):
         resp = await handler(request)
-        resp.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = "https://ru-semantle.surge.sh"
+        allowed_origin = "https://ru-semantle.surge.sh" if config.IS_PROD else "http://localhost:8080"
+        resp.headers[hdrs.ACCESS_CONTROL_ALLOW_ORIGIN] = allowed_origin
         return resp
     
     app.middlewares.append(cors_middleware)

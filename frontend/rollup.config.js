@@ -8,8 +8,12 @@ import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import replace from '@rollup/plugin-replace';
 
-let gitTag = process.env.GIT_TAG;
-console.log(`Building with version ${gitTag}`);
+let version = process.env.GIT_TAG;
+if (!version) {
+	console.warn("No GIT_TAG environment variable found");
+	version = "development";
+}
+console.log(`Building with version ${version}`);
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -44,7 +48,8 @@ export default {
 	},
 	plugins: [
 		replace({
-			buildVersion: gitTag,
+			buildTimeReplacedVersion: version,
+			buildTimeReplacedIsProduction: production,
 			preventAssignment: true,
 		}),
 		svelte({
