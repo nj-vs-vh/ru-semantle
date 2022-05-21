@@ -11,5 +11,9 @@
 <style>
     .container {
         margin-top: 30px;
+        width: 100%;
+        display: flex;
+        align-content: center;
+        justify-content: center;
     }
 </style>

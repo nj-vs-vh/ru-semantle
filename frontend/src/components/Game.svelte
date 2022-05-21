@@ -2,6 +2,8 @@
     import GuessInput from "./GuessInput.svelte";
     import GameIntro from "./GameIntro.svelte";
     import WordRow from "./WordRow.svelte";
+    import NewGuessedWord from "./NewGuessedWord.svelte";
+    
     import { setContext } from "svelte";
 
     import {
@@ -10,6 +12,7 @@
         saveWordGuessesToStorage,
     } from "../storage";
     import type { GameMetadata, WordGuess } from "../types";
+import WordTable from "./WordTable.svelte";
 
     export let metadata: GameMetadata;
 
@@ -47,7 +50,7 @@
     });
     currentWordGuesses.push({
         word: "наблюдать",
-        similarity: 1.00,
+        similarity: 1.0,
         rating: 1,
     });
     currentWordGuesses.push({ word: "картошка", similarity: 0.021111 });
@@ -56,34 +59,28 @@
 
     currentWordGuesses = loadStoredWordGuesses();
 
-    // let guessedWord = "";
+    let newGuessedWord: string = null;
+
     function onWordGuessed(e: CustomEvent<{ word: string }>) {
-        // guessedWord = e.detail.word;
-        // window.alert(guessedWord);
+        newGuessedWord = e.detail.word;
     }
 </script>
 
 <div class="page-text-block top-margin">
-    <GameIntro/>
+    <GameIntro />
     <GuessInput on:guess={onWordGuessed} />
-    <!-- TODO: GuessedWordElement -->
-    <table>
+    {#if newGuessedWord != null}
+        <NewGuessedWord guessedWord={newGuessedWord} />
+    {/if}
+    <WordTable>
         {#each sortedWordGuesses as wordGuess (wordGuess.word)}
             <WordRow {wordGuess} />
         {/each}
-    </table>
+    </WordTable>
 </div>
 
 <style>
     .top-margin {
         margin-top: 10vh;
-    }
-
-    table {
-        margin-top: 20px;
-        width: 100%;
-        font-size: large;
-        border-collapse: collapse;
-        overflow-wrap: anywhere;
     }
 </style>

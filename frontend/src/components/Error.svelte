@@ -9,7 +9,7 @@
 <style>
     div {
         padding: 10px 15px;
-        margin: 5px;
+        margin: 5px 0;
         background-color: rgb(255, 239, 238);
         border: 2px solid rgb(254, 121, 114);
         border-radius: 5px;

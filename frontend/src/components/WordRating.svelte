@@ -25,7 +25,6 @@
             // );
             message = `#${ratingStr}`;
             const fireness = (gameMetadata.config.n_top_words - rating + 1) / gameMetadata.config.n_top_words;
-            console.log(fireness);
             const nFireEmoji = Math.ceil((nEmojiInBackground - 1) * fireness);
             emojis = "🔥".repeat(nFireEmoji) + "❄️".repeat(nEmojiInBackground - nFireEmoji);
         }

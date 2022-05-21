@@ -22,30 +22,40 @@
         }
     }
 
+    let suggestionsLoopRunning = true;
+
     async function suggestWords() {
-        await sleep(10);
         let randomWords: string[] = [];
-        // let randomWords: string[] = ["раз", "два", "пример"];
         while (true) {
             await sleep(10);
-            if (randomWords.length == 0) {
-                randomWords = await getRandomWords();
-                if (randomWords === null) {
-                    return;
+            suggestionsLoopRunning = true;
+            while (true) {  // suggestions loop, interrupted by new guesses
+                await sleep(10);
+                if (randomWords.length == 0) {
+                    randomWords = await getRandomWords();
+                    if (randomWords === null) {
+                        return;  // error occured, something's wrong
+                    }
                 }
+                if (!suggestionsLoopRunning)  {
+                    break;
+                }
+                await typeSuggestion(`например, ${randomWords.pop()}`)
             }
-            await typeSuggestion(`например, ${randomWords.pop()}`)
         }
     }
+    
+    suggestWords();
 
     function guessWordClicked(event: MouseEvent) {
         dispatch("guess", {
             word: currentGuess,
         });
         currentGuess = "";
+        suggestion = "";
+        suggestionsLoopRunning = false;
     }
 
-    suggestWords();
 </script>
 
 <form class="container">

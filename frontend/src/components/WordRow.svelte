@@ -8,13 +8,13 @@
 
 
 <tr>
-    <td>
+    <td id="word">
         {wordGuess.word}
     </td>
-    <td class="align-right">
+    <td id="similarity">
         {formatSimilarity(wordGuess.similarity)}
     </td>
-    <td class="last-col">
+    <td id="rating">
         <WordRating rating={wordGuess.rating} />
     </td>
 </tr>
@@ -28,11 +28,16 @@
         text-align: left;
     }
 
-    td.last-col {
+    #word {
+        width: 40%;
+    }
+
+    #similarity {
+        width: 20%;
+        text-align: right;
+    }
+    #rating {
         border: none;
     }
 
-    td.align-right {
-        text-align: right;
-    }
 </style>

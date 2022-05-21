@@ -9,6 +9,7 @@ const networkErrorMessage = "Ошибка подключения, попробу
 
 
 export async function guessWord(word: string): Promise<WordGuessResult> {
+    // await sleep(5);   // for loading spinner test
     console.log(`Guessing "${word}" (${baseUrl})...`)
     try {
         const resp = await fetch(
@@ -53,7 +54,7 @@ export async function getRandomWords(): Promise<string[] | null> {
 
 
 export async function getMetadata(): Promise<GameMetadata | string> {
-    // await sleep(60);   // for loading spinner test
+    // await sleep(5);   // for loading spinner test
     // return "Example error message";  // for error display test
     console.log(`Fetching metadata (${baseUrl})...`)
     try {
