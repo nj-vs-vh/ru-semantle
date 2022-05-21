@@ -20,7 +20,7 @@
 </tr>
 
 <style>
-	tr:nth-child(even) {background-color: #f5f5ff;}
+	tr:nth-child(even) {background-color: #fafaff;}
 
     td {
         border-right: solid #ddd 1px;

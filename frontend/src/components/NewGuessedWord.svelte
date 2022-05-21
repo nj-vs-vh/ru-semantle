@@ -4,10 +4,22 @@
     import Spinner from "./Spinner.svelte";
     import WordRow from "./WordRow.svelte";
     import WordTable from "./WordTable.svelte";
+    import { createEventDispatcher } from "svelte";
+    import type { WordGuess } from "../types";
+
+    const dispatch = createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
 
     export let guessedWord: string;
 
-    $: wordGuessPromise = guessWord(guessedWord);
+    $: wordGuessPromise = guessWord(guessedWord).then(
+        (wgr) => {
+            console.log(wgr);
+            if (typeof wgr !== "string") {
+                dispatch("successfulWordGuess", { wg: wgr });
+            }
+            return wgr;
+        }
+    );
 </script>
 
 {#await wordGuessPromise}

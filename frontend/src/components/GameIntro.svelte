@@ -9,7 +9,7 @@
 
 <div>
     <h2>
-        #{gameMetadata.game_number}
+        Игра #{gameMetadata.game_number}
     </h2>
     <p>
         Ранжировано топ-<strong>{gameMetadata.config.n_top_words}</strong> слов.

@@ -26,51 +26,26 @@ import WordTable from "./WordTable.svelte";
 
     ensureUpToDateStoredData(metadata.game_number);
 
-    // TEMP
-    currentWordGuesses.push({ word: "пример", similarity: 0.1142514 });
-    currentWordGuesses.push({
-        word: "пыриться",
-        similarity: 0.3011,
-        rating: 523,
-    });
-    currentWordGuesses.push({
-        word: "глаза",
-        similarity: 0.2455,
-        rating: 1000,
-    });
-    currentWordGuesses.push({
-        word: "глядеть",
-        similarity: 0.6945,
-        rating: 46,
-    });
-    currentWordGuesses.push({
-        word: "смотреть",
-        similarity: 0.7254,
-        rating: 2,
-    });
-    currentWordGuesses.push({
-        word: "наблюдать",
-        similarity: 1.0,
-        rating: 1,
-    });
-    currentWordGuesses.push({ word: "картошка", similarity: 0.021111 });
-    saveWordGuessesToStorage(currentWordGuesses);
-    // END TEMP
-
     currentWordGuesses = loadStoredWordGuesses();
+    console.log(currentWordGuesses);
 
     let newGuessedWord: string = null;
 
-    function onWordGuessed(e: CustomEvent<{ word: string }>) {
+    function onNewWordGuessed(e: CustomEvent<{ word: string }>) {
         newGuessedWord = e.detail.word;
+    }
+
+    function onSuccessfulWordGuess(e: CustomEvent<{ wg: WordGuess }>) {
+        currentWordGuesses = [...currentWordGuesses, e.detail.wg];
+        saveWordGuessesToStorage(currentWordGuesses);
     }
 </script>
 
 <div class="page-text-block top-margin">
     <GameIntro />
-    <GuessInput on:guess={onWordGuessed} />
+    <GuessInput on:guess={onNewWordGuessed} />
     {#if newGuessedWord != null}
-        <NewGuessedWord guessedWord={newGuessedWord} />
+        <NewGuessedWord guessedWord={newGuessedWord} on:successfulWordGuess={onSuccessfulWordGuess}/>
     {/if}
     <WordTable>
         {#each sortedWordGuesses as wordGuess (wordGuess.word)}

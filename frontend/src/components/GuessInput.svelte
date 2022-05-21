@@ -84,7 +84,7 @@
         flex-grow: 10;
         min-height: 1.5em;
         margin-top: 10px;
-        font-size: larger;
+        font-size: large;
         margin-right: 5px;
         min-width: 0;
         text-overflow: ellipsis;
