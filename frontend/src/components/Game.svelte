@@ -29,7 +29,7 @@
         currentWordGuesses.length > 0 &&
         Math.min.apply(
             Math,
-            currentWordGuesses.map((wg) => wg.rating)
+            currentWordGuesses.map(wg => wg.rating).filter(r => r !== undefined)
         ) === 1
     )
         isGameWonStore.set(true);
@@ -39,7 +39,7 @@
         newGuessedWord = e.detail.word;
     }
 
-    function onSuccessfulWordGuess(newWordGuess: WordGuess) {
+    function onSuccessfulWordGuess(newWordGuess: WordGuess, persist: boolean = true) {
         const currentWords = currentWordGuesses.map((wg) => wg.word);
         if (!currentWords.includes(newWordGuess.word)) {
             currentWordGuesses = [...currentWordGuesses, newWordGuess];
@@ -65,7 +65,7 @@
             if (topWords !== null) {
                 if (allTopWords)
                     for (let tw of topWords) {
-                        onSuccessfulWordGuess(tw);
+                        onSuccessfulWordGuess(tw, false);
                     }
                 else onSuccessfulWordGuess(topWords[0]);
             }
