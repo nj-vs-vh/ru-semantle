@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { getRandomWords } from "./api";
-    import { sleep } from "./utils";
+    import { getRandomWords } from "../api";
+    import { sleep } from "../utils";
     import { createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher<{guess:{word:string}}>();
@@ -42,6 +42,7 @@
         dispatch("guess", {
             word: currentGuess,
         });
+        currentGuess = "";
     }
 
     suggestWords();
@@ -75,6 +76,7 @@
         margin-top: 10px;
         font-size: larger;
         margin-right: 5px;
+        min-width: 0;
     }
 
     input::placeholder {
