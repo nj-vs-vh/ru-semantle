@@ -28,13 +28,15 @@
     );
     ensureUpToDateStoredData(metadata.game_number);
     currentWordGuesses = loadStoredWordGuesses();
-    let currentLastGuessIdx =
-        Math.max.apply(
-            Math,
-            currentWordGuesses
-                .map((wg) => wg.idx)
-                .filter((idx) => idx !== undefined)
-        ) || 0;
+    let currentLastGuessIdx = Math.max.apply(
+        Math,
+        currentWordGuesses
+            .map((wg) => wg.idx)
+            .filter((idx) => idx !== undefined)
+    );
+    if (currentLastGuessIdx < 0) {
+        currentLastGuessIdx = 0;
+    }
 
     if (
         currentWordGuesses.length > 0 &&
