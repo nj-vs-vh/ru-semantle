@@ -60,6 +60,7 @@ def create_app() -> web.Application:
             {
                 "config": config.to_json(),
                 "game_number": storage.cached.game_no,
+                "clues": storage.cached.clues.to_json(),
             }
         )
 

@@ -8,7 +8,7 @@ import pytz
 
 from typing import Optional
 
-from backend.game.types_ import GameConfig, SemantleGame, TopWord
+from backend.game.types_ import GameClues, GameConfig, SemantleGame, TopWord
 from backend.game.generate import generate_game
 
 
@@ -25,6 +25,7 @@ class CachedSemantleGame:
     top_words: list[TopWord]
     top_words_by_str: dict[str, TopWord]
     cached_on: date
+    clues: GameClues
 
 
 GeneratedSemantleGame = tuple[int, SemantleGame]  # game number and the game itself
@@ -41,12 +42,19 @@ class GameStorage:
         self._cache(self._load_sync_game())
 
     def _cache(self, game: GeneratedSemantleGame):
+        game_no, top_words = game
         self._cached = CachedSemantleGame(
-            game_no=game[0],
-            top_words=game[1],
-            answer=game[1][0],
-            top_word_count=len(game[1]),
-            top_words_by_str={tw["word"]: tw for tw in game[1]},
+            game_no=game_no,
+            top_words=top_words,
+            answer=top_words[0],
+            top_word_count=len(top_words),
+            top_words_by_str={tw["word"]: tw for tw in top_words},
+            clues=GameClues(
+                next_to_answer_similarity=top_words[1]["similarity"],
+                word_10_similarity=top_words[10]["similarity"],
+                word_100_similarity=top_words[100]["similarity"],
+                last_top_word_similarity=top_words[-1]["similarity"],
+            ),
             cached_on=local_datetime(),
         )
 
@@ -81,7 +89,9 @@ class GameStorage:
             game_generated_at_dump: Optional[bytes] = self.redis.get(self.CURRENT_GAME_GENERATED_AT_KEY)
             game_generated_at = datetime.fromisoformat(game_generated_at_dump.decode("utf-8"))
             if local_date() > game_generated_at.date():
-                logger.info(f"Found expired game in storage (generated on {game_generated_at.date()}, now {local_date()})")
+                logger.info(
+                    f"Found expired game in storage (generated on {game_generated_at.date()}, now {local_date()})"
+                )
                 return self._new_game()
             game = json.loads(game_dump.decode("utf-8"))
             assert isinstance(game, list)
