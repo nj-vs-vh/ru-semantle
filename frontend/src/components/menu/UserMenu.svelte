@@ -1,13 +1,13 @@
 <script lang="ts">
     import { createEventDispatcher, getContext } from "svelte";
-import { gameWonStore } from "../../stores";
+import { isGameWonStore } from "../../stores";
     import type { GameMetadata } from "../../types";
 
     export let wrapped: boolean;
 
     let metadata: GameMetadata = getContext("metadata");
     let isGameWon;
-    gameWonStore.subscribe(v => {isGameWon = v});
+    isGameWonStore.subscribe(v => {isGameWon = v});
 
     const dispatch = createEventDispatcher<{
         hint: null;

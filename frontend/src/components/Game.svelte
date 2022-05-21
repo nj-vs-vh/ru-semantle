@@ -14,7 +14,7 @@
     } from "../storage";
     import type { GameMetadata, WordGuess } from "../types";
     import { getHint, getTopWords } from "../api";
-import { gameWonStore } from "../stores";
+    import { isGameWonStore } from "../stores";
 
     export let metadata: GameMetadata;
     setContext("metadata", metadata);
@@ -25,8 +25,14 @@ import { gameWonStore } from "../stores";
     );
     ensureUpToDateStoredData(metadata.game_number);
     currentWordGuesses = loadStoredWordGuesses();
-    if (currentWordGuesses.length > 0 && Math.min.apply(Math, currentWordGuesses.map(wg => wg.rating)) === 1)
-        gameWonStore.set(true);
+    if (
+        currentWordGuesses.length > 0 &&
+        Math.min.apply(
+            Math,
+            currentWordGuesses.map((wg) => wg.rating)
+        ) === 1
+    )
+        isGameWonStore.set(true);
 
     let newGuessedWord: string = null;
     function onNewWordGuessed(e: CustomEvent<{ word: string }>) {
@@ -54,7 +60,7 @@ import { gameWonStore } from "../stores";
     }
 
     function giveUp(allTopWords: boolean) {
-        gameWonStore.set(true);
+        isGameWonStore.set(true);
         getTopWords().then((topWords) => {
             if (topWords !== null) {
                 if (allTopWords)

@@ -7,7 +7,7 @@
     import { guessWord } from "../api";
     import { createEventDispatcher } from "svelte";
     import type { WordGuess } from "../types";
-    import { gameWonStore } from "../stores";
+    import { isGameWonStore } from "../stores";
 
     const dispatch =
         createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
@@ -22,7 +22,7 @@
     });
 
     async function gameWon() {
-        gameWonStore.set(true);
+        isGameWonStore.set(true);
         // @ts-ignore
         return window.confetti({ particleCount: 100, spread: 70 });
     }

@@ -1,3 +1,3 @@
 import { writable } from 'svelte/store';
 
-export const gameWonStore = writable(false);
+export const isGameWonStore = writable(false);
