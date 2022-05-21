@@ -3,7 +3,7 @@
     import GameIntro from "./GameIntro.svelte";
     import WordRow from "./WordRow.svelte";
     import NewGuessedWord from "./NewGuessedWord.svelte";
-    
+
     import { setContext } from "svelte";
 
     import {
@@ -12,7 +12,7 @@
         saveWordGuessesToStorage,
     } from "../storage";
     import type { GameMetadata, WordGuess } from "../types";
-import WordTable from "./WordTable.svelte";
+    import WordTable from "./WordTable.svelte";
 
     export let metadata: GameMetadata;
 
@@ -36,8 +36,12 @@ import WordTable from "./WordTable.svelte";
     }
 
     function onSuccessfulWordGuess(e: CustomEvent<{ wg: WordGuess }>) {
-        currentWordGuesses = [...currentWordGuesses, e.detail.wg];
-        saveWordGuessesToStorage(currentWordGuesses);
+        const newWordGuess = e.detail.wg;
+        const currentWords = currentWordGuesses.map((wg) => wg.word)
+        if (!currentWords.includes(newWordGuess.word)) {
+            currentWordGuesses = [...currentWordGuesses, e.detail.wg];
+            saveWordGuessesToStorage(currentWordGuesses);
+        }
     }
 </script>
 
@@ -45,7 +49,10 @@ import WordTable from "./WordTable.svelte";
     <GameIntro />
     <GuessInput on:guess={onNewWordGuessed} />
     {#if newGuessedWord != null}
-        <NewGuessedWord guessedWord={newGuessedWord} on:successfulWordGuess={onSuccessfulWordGuess}/>
+        <NewGuessedWord
+            guessedWord={newGuessedWord}
+            on:successfulWordGuess={onSuccessfulWordGuess}
+        />
     {/if}
     <WordTable>
         {#each sortedWordGuesses as wordGuess (wordGuess.word)}

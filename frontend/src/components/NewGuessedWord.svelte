@@ -13,12 +13,16 @@
     export let guessedWord: string;
 
     $: wordGuessPromise = guessWord(guessedWord).then((wgr) => {
-        console.log(wgr);
         if (typeof wgr !== "string") {
             dispatch("successfulWordGuess", { wg: wgr });
         }
         return wgr;
     });
+
+    async function confetti() {
+        // @ts-ignore
+        return window.confetti({ particleCount: 100, spread: 70 });
+    }
 </script>
 
 {#await wordGuessPromise}
@@ -30,5 +34,9 @@
         <WordTable>
             <WordRow wordGuess={wordGuessResult} />
         </WordTable>
+    {:else}
+        {#await confetti()}
+            <div />
+        {/await}
     {/if}
 {/await}

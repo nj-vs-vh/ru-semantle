@@ -48,12 +48,14 @@
     suggestWords();
 
     function guessWordClicked(event: MouseEvent) {
-        dispatch("guess", {
-            word: currentGuess,
-        });
-        currentGuess = "";
-        suggestion = "";
-        suggestionsLoopRunning = false;
+        if (currentGuess.length > 0) {
+            dispatch("guess", {
+                word: currentGuess,
+            });
+            currentGuess = "";
+            suggestion = "";
+            suggestionsLoopRunning = false;
+        }
     }
 
 </script>
