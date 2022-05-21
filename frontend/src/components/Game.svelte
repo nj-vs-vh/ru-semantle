@@ -29,7 +29,9 @@
         currentWordGuesses.length > 0 &&
         Math.min.apply(
             Math,
-            currentWordGuesses.map(wg => wg.rating).filter(r => r !== undefined)
+            currentWordGuesses
+                .map((wg) => wg.rating)
+                .filter((r) => r !== undefined)
         ) === 1
     )
         isGameWonStore.set(true);
@@ -39,11 +41,16 @@
         newGuessedWord = e.detail.word;
     }
 
-    function onSuccessfulWordGuess(newWordGuess: WordGuess, persist: boolean = true) {
+    function onSuccessfulWordGuess(
+        newWordGuess: WordGuess,
+        persist: boolean = true
+    ) {
         const currentWords = currentWordGuesses.map((wg) => wg.word);
         if (!currentWords.includes(newWordGuess.word)) {
             currentWordGuesses = [...currentWordGuesses, newWordGuess];
-            saveWordGuessesToStorage(currentWordGuesses);
+            if (persist) {
+                saveWordGuessesToStorage(currentWordGuesses);
+            }
         }
     }
 
