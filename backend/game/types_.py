@@ -12,7 +12,7 @@ class TopWord(Word):
     local_coords: tuple[float, float]  # used for visualization
 
 
-SemantleGame = tuple[int, list[TopWord]]
+SemantleGame = list[TopWord]
 
 
 @dataclass

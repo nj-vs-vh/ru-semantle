@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 class CachedSemantleGame:
     """Semantle game loaded into RAM for fast access"""
 
+    game_no: int
     top_word_count: int
     answer: str
     top_words: list[TopWord]
@@ -26,63 +27,72 @@ class CachedSemantleGame:
     cached_on: date
 
 
+GeneratedSemantleGame = tuple[int, SemantleGame]  # game number and the game itself
+
+
 class GameStorage:
     CURRENT_GAME_KEY = "ru-semantle-current-game"
+    CURRENT_GAME_NUMBER_KEY = "ru-semantle-current-game-no"
     CURRENT_GAME_GENERATED_AT_KEY = "ru-semantle-current-game-generated-at"
 
     def __init__(self, config: GameConfig, redis: Redis):
         self.config = config
         self.redis = redis
-        self._cache(self._synchronize_game())
+        self._cache(self._load_sync_game())
 
-    def _cache(self, game: SemantleGame):
+    def _cache(self, game: GeneratedSemantleGame):
         self._cached = CachedSemantleGame(
-            top_word_count=game[0],
-            answer=game[1][0],
+            game_no=game[0],
             top_words=game[1],
+            answer=game[1][0],
+            top_word_count=len(game[1]),
             top_words_by_str={tw["word"]: tw for tw in game[1]},
-            cached_on=local_date(),
+            cached_on=local_datetime(),
         )
 
     @property
     def cached(self) -> CachedSemantleGame:
-        if self._cached.cached_on < local_date():
-            logger.info("Found old game in cache, synchronizing")
-            self._cache(self._synchronize_game())
+        if self._cached.cached_on.date() < local_date():
+            logger.info("Found expired game in cache, synchronizing")
+            self._cache(self._load_sync_game())
         return self._cached
 
     async def daily_game_update(self):
         logger.info("Running periodic game synchronization")
         while True:
             await asyncio.sleep(300)
-            self._cache(self._synchronize_game())
+            self._cache(self._load_sync_game())
 
     def reset_game(self):
         self._cache(self._new_game())
 
-    def _new_game(self) -> SemantleGame:
+    def _new_game(self) -> GeneratedSemantleGame:
         game = generate_game(n_top_words=self.config.n_top_words, local_dimensions=self.config.local_dimensions)
         dump = json.dumps(game, ensure_ascii=False)
         dump = dump.encode("utf-8")
         self.redis.set(self.CURRENT_GAME_KEY, dump)
         self.redis.set(self.CURRENT_GAME_GENERATED_AT_KEY, local_datetime().isoformat())
-        return game
+        game_number = self.redis.incr(self.CURRENT_GAME_NUMBER_KEY)
+        return game_number, game
 
-    def _synchronize_game(self) -> SemantleGame:
+    def _load_sync_game(self) -> GeneratedSemantleGame:
         try:
             game_dump: Optional[bytes] = self.redis.get(self.CURRENT_GAME_KEY)
             game_generated_at_dump: Optional[bytes] = self.redis.get(self.CURRENT_GAME_GENERATED_AT_KEY)
             game_generated_at = datetime.fromisoformat(game_generated_at_dump.decode("utf-8"))
             if local_date() > game_generated_at.date():
-                logger.info(f"Found old game in storage (generated on {game_generated_at.date()}, now {local_date()})")
+                logger.info(f"Found expired game in storage (generated on {game_generated_at.date()}, now {local_date()})")
                 return self._new_game()
-            game_size, top_words = json.loads(game_dump.decode("utf-8"))
-            return game_size, top_words
-        except Exception:
+            game = json.loads(game_dump.decode("utf-8"))
+            assert isinstance(game, list)
+            game_number = int(self.redis.get(self.CURRENT_GAME_NUMBER_KEY).decode("utf-8"))
+            return game_number, game
+        except Exception as e:
+            logger.info(f"Error reading game from Redis, generating new one: {e}")
             return self._new_game()
 
 
-GAME_TZ = pytz.timezone("Asia/Tbilisi")
+GAME_TZ = pytz.timezone("Asia/Tbilisi")  # new game is generatedat midnight in this timezone
 
 
 def local_datetime() -> datetime:

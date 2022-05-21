@@ -45,7 +45,7 @@ def generate_answer() -> str:
         raise RuntimeError("Didn't generate a normalizeable answer in 10000 attempts :(")
 
 
-def enhance_top_words(words: list[Word], local_dimensions: int) -> list[TopWord]:
+def game_from_words(words: list[Word], local_dimensions: int) -> SemantleGame:
     navec = get_navec_model()
     # list of 1 x word vector dims numpy arrays
     word_vectors: list[np.ndarray] = [np.expand_dims(navec[w["word"]], 0) for w in words]
@@ -83,7 +83,7 @@ def generate_game(n_top_words: int = 1000, local_dimensions: int = 2) -> Semantl
                 top_current_words.pop(-1)
                 current_threshold_similarity = top_current_words[-1]['similarity']
 
-    return n_top_words, enhance_top_words(top_current_words, local_dimensions)
+    return game_from_words(top_current_words, local_dimensions)
 
 
 if __name__ == "__main__":

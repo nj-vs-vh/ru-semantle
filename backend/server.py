@@ -53,9 +53,15 @@ def create_app() -> web.Application:
         storage.reset_game()
         return web.Response(text="Reset")
 
-    async def dump_config(request: web.Request) -> web.Response:
+    async def metadata(request: web.Request) -> web.Response:
         config: GameConfig = app["config"]
-        return web.json_response(config.to_json())
+        storage: GameStorage = app["storage"]
+        return web.json_response(
+            {
+                "config": config.to_json(),
+                "game_number": storage.cached.game_no,
+            }
+        )
 
     async def dump_top_words(request: web.Request) -> web.Response:
         storage: GameStorage = app["storage"]
@@ -90,9 +96,9 @@ def create_app() -> web.Application:
         return web.json_response(words)
 
     app.router.add_post("/guess", guess)
-    app.router.add_get("/game-config", dump_config)
+    app.router.add_get("/metadata", metadata)
     app.router.add_get("/top-words", dump_top_words)
-    app.router.add_post("/reset", reset_game)
     app.router.add_get("/random-words", random_words)
+    app.router.add_post("/admin/reset", reset_game)
 
     return app
