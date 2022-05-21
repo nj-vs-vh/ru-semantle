@@ -20,14 +20,14 @@
             {formatSimilarity(
                 gameMetadata.clues.next_to_answer_similarity
             )}</strong
-        >, 10-e —
+        >, десятое —
         <strong>
             {formatSimilarity(gameMetadata.clues.word_10_similarity)}</strong
-        >, 100-e —
+        >, сотое —
         <strong>
             {formatSimilarity(gameMetadata.clues.word_100_similarity)}</strong
         >,
-        {gameMetadata.config.n_top_words}-e —
+        последнее ({gameMetadata.config.n_top_words}-e) —
         <strong>
             {formatSimilarity(
                 gameMetadata.clues.last_top_word_similarity

@@ -3,6 +3,8 @@
 	import Spinner from "./components/shared/Spinner.svelte";
 	import Screen from "./components/shared/Screen.svelte";
 	import Error from "./components/shared/Error.svelte";
+	import Modal from "svelte-simple-modal";
+
 	import { getMetadata } from "./api";
 
 	let metadataPromise = getMetadata();
@@ -11,15 +13,17 @@
 <div class="page">
 	{#await metadataPromise}
 		<Screen>
-			<Spinner sizeEm={3}/>
+			<Spinner sizeEm={3} />
 		</Screen>
 	{:then metadataResult}
 		{#if typeof metadataResult === "string"}
 			<Screen>
-				<Error errorMessage={metadataResult}/>
+				<Error errorMessage={metadataResult} />
 			</Screen>
 		{:else}
-			<Game metadata={metadataResult} />
+			<Modal styleCloseButton={{boxShadow: "none"}}>
+				<Game metadata={metadataResult} />
+			</Modal>
 		{/if}
 	{/await}
 </div>

@@ -1,11 +1,12 @@
 <script lang="ts">
     import UserInput from "./UserInput.svelte";
-    import GameIntro from "./GameIntro.svelte";
+    import GameIntro from "./GameInfo.svelte";
     import NewGuessedWord from "./NewGuessedWord.svelte";
     import WordRow from "./words/WordRow.svelte";
     import WordTable from "./words/WordTable.svelte";
-
-    import { setContext } from "svelte";
+    import MapModal from "./modals/MapModal.svelte";
+    
+    import { setContext, getContext } from "svelte";
 
     import {
         ensureUpToDateStoredData,
@@ -17,7 +18,9 @@
     import { isGameWonStore } from "../stores";
 
     export let metadata: GameMetadata;
+
     setContext("metadata", metadata);
+    const { open } = getContext("simple-modal");
 
     let currentWordGuesses: WordGuess[] = [];
     $: sortedWordGuesses = [...currentWordGuesses].sort(
@@ -87,6 +90,7 @@
         on:hint={onHint}
         on:giveUp={() => giveUp(false)}
         on:showAllTop={() => giveUp(true)}
+        on:map={() => open(MapModal)}
     />
     {#if newGuessedWord != null}
         <NewGuessedWord
