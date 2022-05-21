@@ -1,5 +1,5 @@
 import type { GameMetadata, WordGuess, WordGuessResult } from "./types";
-import { sleep } from "./utils";
+import { sleep, toIsoStringTz } from "./utils";
 
 
 // @ts-ignore
@@ -23,7 +23,7 @@ export async function guessWord(word: string): Promise<WordGuessResult> {
         const respText = await resp.text();
         if (resp.ok) {
             const wg: WordGuess = JSON.parse(respText);
-            wg.guessedAt = new Date().toISOString();
+            wg.guessedAt = toIsoStringTz(new Date());
             return wg;
         } else {
             return respText;

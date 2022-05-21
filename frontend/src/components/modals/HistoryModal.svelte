@@ -20,17 +20,9 @@
                 text: timestampedWords.map(
                     (wg) => `${wg.word}`
                 ),
-                marker: { size: 12 },
+                marker: { size: 12, color: "#1d2ad5" },
             };
-        Plotly.newPlot(plotlyCanvas, [dataset], {
-            // xaxis: {
-            //     range: [-1, 1],
-            // },
-            // yaxis: {
-            //     range: [-1, 1],
-            // },
-            // margin: { t: 0 },
-        });
+        Plotly.newPlot(plotlyCanvas, [dataset], {  });
     });
 </script>
 
