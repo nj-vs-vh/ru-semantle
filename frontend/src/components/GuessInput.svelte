@@ -77,6 +77,7 @@
         font-size: larger;
         margin-right: 5px;
         min-width: 0;
+        text-overflow: ellipsis;
     }
 
     input::placeholder {

@@ -4,5 +4,6 @@ export async function sleep(delaySec: number): Promise<undefined> {
 
 
 export function formatSimilarity(f: number): string {
-    return (100 * f).toFixed(2)
+    const symbolsAftreDecimalPoint = 2;
+    return (100 * f).toFixed(symbolsAftreDecimalPoint);
 }

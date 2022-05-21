@@ -7,10 +7,10 @@
 
 <div>
     <h2>
-        Игра #{gameMetadata.game_number}
+        #{gameMetadata.game_number}
     </h2>
     <p>
-        Ранжирование приводится для ближайших <strong>{gameMetadata.config.n_top_words}</strong> слов.
+        Ранжирование приводится для топ-<strong>{gameMetadata.config.n_top_words}</strong> слов.
     </p>
     <p>
         Ближайшее к правильному ответу слово расположено на расстоянии
