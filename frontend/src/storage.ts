@@ -20,7 +20,9 @@ export function loadStoredWordGuesses(): WordGuess[] {
 }
 
 
-export function saveWordGuessesToStorage(wordGuesses: WordGuess[]) {
-    const wordGuessesDump = JSON.stringify(wordGuesses);
+export function addWordGuessToStorage(wordGuess: WordGuess) {
+    const storedWordGuesses = loadStoredWordGuesses();
+    storedWordGuesses.push(wordGuess);
+    const wordGuessesDump = JSON.stringify(storedWordGuesses);
     window.localStorage.setItem(STORED_WORD_GUESSES_KEY, wordGuessesDump);
 }

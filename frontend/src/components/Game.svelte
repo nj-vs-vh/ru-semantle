@@ -11,7 +11,7 @@
     import {
         ensureUpToDateStoredData,
         loadStoredWordGuesses,
-        saveWordGuessesToStorage,
+        addWordGuessToStorage,
     } from "../storage";
     import type { GameMetadata, WordGuess } from "../types";
     import { getHint, getTopWords } from "../api";
@@ -52,7 +52,7 @@ import HistoryModal from "./modals/HistoryModal.svelte";
         if (!currentWords.includes(newWordGuess.word)) {
             currentWordGuesses = [...currentWordGuesses, newWordGuess];
             if (persist) {
-                saveWordGuessesToStorage(currentWordGuesses);
+                addWordGuessToStorage(newWordGuess);
             }
         }
     }
@@ -108,6 +108,6 @@ import HistoryModal from "./modals/HistoryModal.svelte";
 
 <style>
     .top-margin {
-        margin-top: 10vh;
+        margin-top: 3vh;
     }
 </style>

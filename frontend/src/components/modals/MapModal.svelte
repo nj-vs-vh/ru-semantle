@@ -18,7 +18,7 @@
             x: [0],
             y: [0],
             mode: "markers+text",
-            name: "Заданное слово",
+            name: "Загаданное слово",
             type: "scatter",
             showlegend: false,
             textposition: "bottom center",
