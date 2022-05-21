@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset='utf-8'>
 	<meta name='viewport' content='width=device-width,initial-scale=1'>
@@ -15,14 +16,23 @@
 		<h1><span id="lang-heading">ru-</span><span>semantle</span></h1>
 		<div class="page-text-block">
 			<p>
-				Русскоязычный клон <a href="https://semantle.com/" target="_blank">Semantle</a> — 
+				Русскоязычный клон <a href="https://semantle.com/" target="_blank">Semantle</a> —
 				аналога Wordle, основанного на семантической близости слов.
+			</p>
+			<p>
+				Векторные представления слов вычисляются с помощью обучения модели на корпусе
+				текстов и кодируют семантику: слова, которые в корпусе часто встречаются в похожих
+				контекстах будут иметь близкие векторы. В результате для любой пары слов можно оценить
+				их семантическую близость. Ориентируясь на это значение предлагается по принципу
+				горячо-холодно найти загаданное слово. Число попыток не ограничено.
 			</p>
 			<p>
 				Использованы векторные представления слов из
 				<a href="https://github.com/natasha/navec" target="_blank">Navec</a>,
-				морфологический анализатор <a href="https://pymorphy2.readthedocs.io/en/stable/" target="_blank">pymorphy2</a>
-				и список самых частотных 3-грамм из <a href="https://ruscorpora.ru/page/corpora-freq/" target="_blank">RusCorpora</a>.
+				морфологический анализатор <a href="https://pymorphy2.readthedocs.io/en/stable/"
+					target="_blank">pymorphy2</a>
+				и список наиболее частотных 3-грамм в русском языке из <a
+					href="https://ruscorpora.ru/page/corpora-freq/" target="_blank">RusCorpora</a>.
 			</p>
 		</div>
 		<a id="play" class="btn-primary" href="play">Играть</a>
@@ -32,4 +42,5 @@
 		<span id="versionSpan"></span>
 	</div>
 </body>
+
 </html>
