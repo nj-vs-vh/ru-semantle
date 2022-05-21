@@ -6,7 +6,7 @@
     import WordTable from "./words/WordTable.svelte";
     import MapModal from "./modals/MapModal.svelte";
     
-    import { setContext, getContext } from "svelte";
+    import { getContext } from "svelte";
 
     import {
         ensureUpToDateStoredData,
@@ -16,10 +16,10 @@
     import type { GameMetadata, WordGuess } from "../types";
     import { getHint, getTopWords } from "../api";
     import { isGameWonStore } from "../stores";
+import HistoryModal from "./modals/HistoryModal.svelte";
 
-    export let metadata: GameMetadata;
+    let metadata: GameMetadata = getContext("metadata");
 
-    setContext("metadata", metadata);
     const { open } = getContext("simple-modal");
 
     let currentWordGuesses: WordGuess[] = [];
@@ -90,7 +90,8 @@
         on:hint={onHint}
         on:giveUp={() => giveUp(false)}
         on:showAllTop={() => giveUp(true)}
-        on:map={() => open(MapModal)}
+        on:map={() => open(MapModal, {words: currentWordGuesses})}
+        on:history={() => open(HistoryModal, {words: currentWordGuesses})}
     />
     {#if newGuessedWord != null}
         <NewGuessedWord

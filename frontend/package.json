@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "canvas-confetti": "^1.5.1",
+    "plotly.js-dist": "^2.12.1",
     "sirv-cli": "^2.0.0"
   }
 }

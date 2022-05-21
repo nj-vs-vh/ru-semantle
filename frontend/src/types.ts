@@ -3,6 +3,7 @@ export interface WordGuess {
     similarity: number,
     rating?: number,
     local_coords?: [number, number],
+    guessedAt?: string
 }
 
 

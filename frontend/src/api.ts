@@ -23,6 +23,7 @@ export async function guessWord(word: string): Promise<WordGuessResult> {
         const respText = await resp.text();
         if (resp.ok) {
             const wg: WordGuess = JSON.parse(respText);
+            wg.guessedAt = new Date().toISOString();
             return wg;
         } else {
             return respText;
