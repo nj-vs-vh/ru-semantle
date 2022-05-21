@@ -28,7 +28,11 @@ body {
 	width: min(100%, max(500px, 50vw));
 }
 
-#lang {
+h1 {
+	margin-top: 0;
+}
+
+#lang-heading {
 	font-weight: 200;
 }
 

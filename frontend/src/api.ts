@@ -1,4 +1,5 @@
 import type { GameMetadata, WordGuess, WordGuessResult } from "./types";
+import { sleep } from "./utils";
 
 
 // @ts-ignore
@@ -52,6 +53,8 @@ export async function getRandomWords(): Promise<string[] | null> {
 
 
 export async function getMetadata(): Promise<GameMetadata | string> {
+    // await sleep(60);   // for loading spinner test
+    // return "Example error message";  // for error display test
     console.log(`Fetching metadata (${baseUrl})...`)
     try {
         const resp = await fetch(`${baseUrl}/metadata`)
