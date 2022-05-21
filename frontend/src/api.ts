@@ -16,7 +16,7 @@ export async function guessWord(word: string): Promise<WordGuessResult> {
             `${baseUrl}/guess`,
             {
                 method: "POST",
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ guess: word })
             }
         )
@@ -70,5 +70,49 @@ export async function getMetadata(): Promise<GameMetadata | string> {
     } catch (error) {
         console.warn(`Error fetching data: ${error}`)
         return networkErrorMessage;
+    }
+}
+
+
+export async function getHint(currentBestRating: number | null): Promise<WordGuess | null> {
+    console.log(`Fetching hint (better than ${currentBestRating})...`)
+    try {
+        const resp = await fetch(`${baseUrl}/hint`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ current_best_rating: currentBestRating })
+        })
+        const respText = await resp.text();
+        if (resp.ok) {
+            console.log("OK")
+            return JSON.parse(respText);
+        } else {
+            console.log(`Error: ${respText}`)
+            return null;
+        }
+    } catch (error) {
+        console.warn(`Error fetching data: ${error}`)
+        return null;
+    }
+}
+
+
+export async function getTopWords(): Promise<WordGuess[] | null> {
+    // await sleep(5);   // for loading spinner test
+    // return "Example error message";  // for error display test
+    console.log(`Fetching top words (${baseUrl})...`)
+    try {
+        const resp = await fetch(`${baseUrl}/give-up`)
+        const respText = await resp.text();
+        if (resp.ok) {
+            console.log("OK")
+            return JSON.parse(respText);
+        } else {
+            console.log(`Error: ${respText}`)
+            return null;
+        }
+    } catch (error) {
+        console.warn(`Error fetching data: ${error}`)
+        return null;
     }
 }

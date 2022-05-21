@@ -71,7 +71,7 @@ def create_app() -> web.Application:
             }
         )
 
-    async def dump_top_words(request: web.Request) -> web.Response:
+    async def give_up(request: web.Request) -> web.Response:
         storage: GameStorage = app["storage"]
         return web.json_response(storage.cached.top_words)
 
@@ -95,6 +95,18 @@ def create_app() -> web.Application:
         answer = storage.cached.answer["word"]
         return web.json_response(data=Word(word=guess, similarity=float(navec.sim(answer, guess))))
 
+    async def hint(request: web.Request) -> web.Response:
+        try:
+            json = await request.json()
+            current_best_rating = json.get("current_best_rating", None)
+        except Exception:
+            return web.Response(status=400, text="JSON payload expected")
+        storage: GameStorage = app["storage"]
+        if current_best_rating is None:
+            return web.json_response(storage.cached.top_words[-1])
+        else:
+            return web.json_response(storage.cached.top_words[max(0, current_best_rating - 2)])
+
     async def random_words(request: web.Request) -> web.Response:
         words = []
         for word in random.choices(get_navec_model().vocab.words, k=100):
@@ -103,10 +115,11 @@ def create_app() -> web.Application:
                 words.append(normalized)
         return web.json_response(words)
 
-    app.router.add_post("/guess", guess)
     app.router.add_get("/metadata", metadata)
-    app.router.add_get("/top-words", dump_top_words)
     app.router.add_get("/random-words", random_words)
+    app.router.add_post("/guess", guess)
+    app.router.add_post("/hint", hint)
+    app.router.add_get("/give-up", give_up)
     app.router.add_post("/admin/reset", reset_game)
 
     return app

@@ -1,28 +1,45 @@
 <script lang="ts">
-    import { getRandomWords } from "../api";
-    import { sleep } from "../utils";
+    import UserMenu from "./menu/UserMenu.svelte";
     import { createEventDispatcher } from "svelte";
+    import { sleep } from "../utils";
+    import { getRandomWords } from "../api";
 
-    const dispatch = createEventDispatcher<{ guess: { word: string } }>();
+    const dispatch =
+        createEventDispatcher<{ guess: { word: string }; hint: null }>();
 
     let currentGuess = "";
     let suggestion = "";
+    let suggestionsLoopRunning = true;
 
     async function typeSuggestion(newSuggestion: string) {
         const betweenStrokesSec = 0.1;
         while (!newSuggestion.includes(suggestion)) {
             suggestion = suggestion.slice(0, suggestion.length - 1);
+            if (!suggestionsLoopRunning) {
+                suggestion = "";
+                return;
+            }
             await sleep(betweenStrokesSec);
+            if (!suggestionsLoopRunning) {
+                suggestion = "";
+                return;
+            }
         }
         let idx = suggestion.length;
         while (idx < newSuggestion.length) {
             suggestion += newSuggestion[idx];
+            if (!suggestionsLoopRunning) {
+                suggestion = "";
+                return;
+            }
             await sleep(betweenStrokesSec);
+            if (!suggestionsLoopRunning) {
+                suggestion = "";
+                return;
+            }
             idx += 1;
         }
     }
-
-    let suggestionsLoopRunning = true;
 
     async function suggestWords() {
         let randomWords: string[] = [];
@@ -58,6 +75,8 @@
             suggestionsLoopRunning = false;
         }
     }
+
+    let userMenuWrapped = true;
 </script>
 
 <div class="container">
@@ -78,9 +97,16 @@
         >
             Проверить
         </button>
-        <button id="unwrapOptionsButton">▼</button>
+        <button
+            id="unwrapOptionsButton"
+            class="btn-secondary"
+            on:click={() => {
+                userMenuWrapped = !userMenuWrapped;
+            }}>{userMenuWrapped ? "▽" : "△"}</button
+        >
     </div>
 </div>
+<UserMenu wrapped={userMenuWrapped} on:hint on:giveUp on:showAllTop on:history on:map />
 
 <style>
     .container {
@@ -118,13 +144,5 @@
     #guessButton {
         min-width: 70%;
         flex-grow: 3;
-    }
-
-    #unwrapOptionsButton {
-        border: none;
-        background-color: transparent;
-        color: #1d2ad5;
-        border: #1d2ad5 1px solid;
-        border-radius: 5px;
     }
 </style>

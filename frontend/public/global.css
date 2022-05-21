@@ -72,6 +72,16 @@ button {
 	font-weight: 600;
 }
 
+.btn-secondary {
+	background-color: transparent;
+	color: #1d2ad5;
+	outline: none;
+	border: #1d2ad5 solid 1px;
+	border-radius: 5px;
+	padding: 0.8vh 1.2vw;
+	font-weight: 500;
+}
+
 #play {
 	font-weight: 600;
 	padding: 2vh 4vh;
