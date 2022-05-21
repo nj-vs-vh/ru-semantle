@@ -14,7 +14,7 @@
         let dataset = {
                 x: timestampedWords.map((wg) => wg.guessedAt),
                 y: timestampedWords.map((wg) => wg.similarity),
-                mode: "markers+lines+text",
+                mode: "markers+text",
                 type: "scatter",
                 textposition: 'bottom center',
                 text: timestampedWords.map(

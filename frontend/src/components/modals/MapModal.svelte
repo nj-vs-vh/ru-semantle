@@ -44,7 +44,6 @@
             yaxis: {
                 range: [-1, 1],
             },
-            // margin: { t: 0 },
         });
     });
 </script>
