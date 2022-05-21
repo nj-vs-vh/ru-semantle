@@ -51,8 +51,8 @@ class GameStorage:
             top_words_by_str={tw["word"]: tw for tw in top_words},
             clues=GameClues(
                 next_to_answer_similarity=top_words[1]["similarity"],
-                word_10_similarity=top_words[10]["similarity"],
-                word_100_similarity=top_words[100]["similarity"],
+                word_10_similarity=top_words[9]["similarity"],
+                word_100_similarity=top_words[99]["similarity"],
                 last_top_word_similarity=top_words[-1]["similarity"],
             ),
             cached_on=local_datetime(),
