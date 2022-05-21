@@ -5,7 +5,8 @@
     import WordRow from "./words/WordRow.svelte";
     import WordTable from "./words/WordTable.svelte";
     import MapModal from "./modals/MapModal.svelte";
-    
+    import HistoryModal from "./modals/HistoryModal.svelte";
+
     import { getContext } from "svelte";
 
     import {
@@ -16,7 +17,6 @@
     import type { GameMetadata, WordGuess } from "../types";
     import { getHint, getTopWords } from "../api";
     import { isGameWonStore } from "../stores";
-import HistoryModal from "./modals/HistoryModal.svelte";
 
     let metadata: GameMetadata = getContext("metadata");
 
@@ -28,6 +28,14 @@ import HistoryModal from "./modals/HistoryModal.svelte";
     );
     ensureUpToDateStoredData(metadata.game_number);
     currentWordGuesses = loadStoredWordGuesses();
+    let currentLastGuessIdx =
+        Math.max.apply(
+            Math,
+            currentWordGuesses
+                .map((wg) => wg.idx)
+                .filter((idx) => idx !== undefined)
+        ) || 0;
+
     if (
         currentWordGuesses.length > 0 &&
         Math.min.apply(
@@ -42,6 +50,7 @@ import HistoryModal from "./modals/HistoryModal.svelte";
     let newGuessedWord: string = null;
     function onNewWordGuessed(e: CustomEvent<{ word: string }>) {
         newGuessedWord = e.detail.word;
+        currentLastGuessIdx += 1;
     }
 
     function onSuccessfulWordGuess(
@@ -90,16 +99,17 @@ import HistoryModal from "./modals/HistoryModal.svelte";
         on:hint={onHint}
         on:giveUp={() => giveUp(false)}
         on:showAllTop={() => giveUp(true)}
-        on:map={() => open(MapModal, {words: currentWordGuesses})}
-        on:history={() => open(HistoryModal, {words: currentWordGuesses})}
+        on:map={() => open(MapModal, { words: currentWordGuesses })}
+        on:history={() => open(HistoryModal, { words: currentWordGuesses })}
     />
     {#if newGuessedWord != null}
         <NewGuessedWord
             guessedWord={newGuessedWord}
+            currentGuessIdx={currentLastGuessIdx}
             on:successfulWordGuess={(e) => onSuccessfulWordGuess(e.detail.wg)}
         />
     {/if}
-    <WordTable>
+    <WordTable header={true}>
         {#each sortedWordGuesses as wordGuess (wordGuess.word)}
             <WordRow {wordGuess} />
         {/each}

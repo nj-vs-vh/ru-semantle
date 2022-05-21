@@ -8,6 +8,9 @@
 
 
 <tr>
+    <td id="index">
+        {wordGuess.idx || "×"}
+    </td>
     <td id="word">
         {wordGuess.word}
     </td>
@@ -26,6 +29,13 @@
         border-right: solid #ddd 1px;
         padding: 0 2vw;
         text-align: left;
+    }
+
+    #index {
+        width: 10%;
+        text-overflow: clip;
+        overflow-wrap: break-word;
+        text-align: center;
     }
 
     #word {

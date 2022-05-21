@@ -1,4 +1,5 @@
 export interface WordGuess {
+    idx?: number,
     word: string,
     similarity: number,
     rating?: number,

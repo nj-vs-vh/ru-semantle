@@ -8,7 +8,7 @@ const baseUrl = buildTimeReplacedIsProduction ? "https://ru-semantle.herokuapp.c
 const networkErrorMessage = "Ошибка подключения, попробуйте обновить страницу!";
 
 
-export async function guessWord(word: string): Promise<WordGuessResult> {
+export async function guessWord(word: string, guessIdx?: number): Promise<WordGuessResult> {
     // await sleep(5);   // for loading spinner test
     console.log(`Guessing "${word}" (${baseUrl})...`)
     try {
@@ -24,6 +24,7 @@ export async function guessWord(word: string): Promise<WordGuessResult> {
         if (resp.ok) {
             const wg: WordGuess = JSON.parse(respText);
             wg.guessedAt = toIsoStringTz(new Date());
+            wg.idx = guessIdx;
             return wg;
         } else {
             return respText;

@@ -15,7 +15,7 @@
         Ранжировано топ-<strong>{gameMetadata.config.n_top_words}</strong> слов.
     </p>
     <p>
-        Ближайшее к правильному ответу слово расположено на расстоянии
+        Ближайшее к правильному ответу слово имеет степень подобия
         <strong>
             {formatSimilarity(
                 gameMetadata.clues.next_to_answer_similarity

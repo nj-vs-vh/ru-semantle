@@ -13,8 +13,9 @@
         createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
 
     export let guessedWord: string;
+    export let currentGuessIdx: number;
 
-    $: wordGuessPromise = guessWord(guessedWord).then((wgr) => {
+    $: wordGuessPromise = guessWord(guessedWord, currentGuessIdx).then((wgr) => {
         if (typeof wgr !== "string") {
             dispatch("successfulWordGuess", { wg: wgr });
         }
@@ -34,7 +35,7 @@
     {#if typeof wordGuessResult === "string"}
         <Error errorMessage={wordGuessResult} />
     {:else if wordGuessResult.rating != 1}
-        <WordTable>
+        <WordTable header={false}>
             <WordRow wordGuess={wordGuessResult} />
         </WordTable>
     {:else}
