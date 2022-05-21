@@ -27,7 +27,7 @@
     async function suggestWords() {
         let randomWords: string[] = [];
         while (true) {
-            await sleep(10);
+            await sleep(60);
             suggestionsLoopRunning = true;
             while (true) {  // suggestions loop, interrupted by new guesses
                 await sleep(10);

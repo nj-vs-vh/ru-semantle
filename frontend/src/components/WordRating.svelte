@@ -5,8 +5,9 @@
 
     export let rating: number | undefined;
     let gameMetadata: GameMetadata = getContext("metadata");
+    
+    const nEmojiInBackground = 5;
 
-    const nEmojiInBackground = 6;
     let message = "холодно";
     let emojis = "❄️".repeat(nEmojiInBackground);
     let emojiSpanClass = "background";
