@@ -30,7 +30,6 @@
 
     td.last-col {
         border: none;
-        min-width: 30%;
     }
 
     td.align-right {
