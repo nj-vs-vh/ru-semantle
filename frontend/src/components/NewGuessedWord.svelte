@@ -1,9 +1,10 @@
 <script lang="ts">
+    import Error from "./shared/Error.svelte";
+    import Spinner from "./shared/Spinner.svelte";
+    import WordRow from "./words/WordRow.svelte";
+    import WordTable from "./words/WordTable.svelte";
+    
     import { guessWord } from "../api";
-    import Error from "./Error.svelte";
-    import Spinner from "./Spinner.svelte";
-    import WordRow from "./WordRow.svelte";
-    import WordTable from "./WordTable.svelte";
     import { createEventDispatcher } from "svelte";
     import type { WordGuess } from "../types";
 

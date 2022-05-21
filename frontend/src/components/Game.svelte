@@ -1,8 +1,9 @@
 <script lang="ts">
-    import GuessInput from "./GuessInput.svelte";
+    import UserInput from "./UserInput.svelte";
     import GameIntro from "./GameIntro.svelte";
-    import WordRow from "./WordRow.svelte";
     import NewGuessedWord from "./NewGuessedWord.svelte";
+    import WordRow from "./words/WordRow.svelte";
+    import WordTable from "./words/WordTable.svelte";
 
     import { setContext } from "svelte";
 
@@ -12,7 +13,6 @@
         saveWordGuessesToStorage,
     } from "../storage";
     import type { GameMetadata, WordGuess } from "../types";
-    import WordTable from "./WordTable.svelte";
 
     export let metadata: GameMetadata;
 
@@ -47,7 +47,7 @@
 
 <div class="page-text-block top-margin">
     <GameIntro />
-    <GuessInput on:guess={onNewWordGuessed} />
+    <UserInput on:guess={onNewWordGuessed} />
     {#if newGuessedWord != null}
         <NewGuessedWord
             guessedWord={newGuessedWord}

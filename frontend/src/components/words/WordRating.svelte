@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getContext } from "svelte";
-    import type { GameMetadata } from "../types";
-    import { pickRandom } from "../utils";
+    import type { GameMetadata } from "../../types";
+    import { pickRandom } from "../../utils";
 
     export let rating: number | undefined;
     let gameMetadata: GameMetadata = getContext("metadata");

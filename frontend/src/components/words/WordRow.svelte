@@ -1,7 +1,7 @@
 <script lang="ts">
     import WordRating from "./WordRating.svelte";
-    import type { WordGuess } from "../types";
-    import { formatSimilarity } from "../utils";
+    import type { WordGuess } from "../../types";
+    import { formatSimilarity } from "../../utils";
 
     export let wordGuess: WordGuess;
 </script>
