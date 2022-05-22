@@ -70,10 +70,10 @@
     }
 
     .win {
-        background: radial-gradient(closest-side, #edfbf7, transparent);
+        background: radial-gradient(closest-side, #e7fff8, transparent);
     }
 
     .lose {
-        background: radial-gradient(closest-side, #fffaf9, transparent);
+        background: radial-gradient(closest-side, #fff2ef, transparent);
     }
 </style>

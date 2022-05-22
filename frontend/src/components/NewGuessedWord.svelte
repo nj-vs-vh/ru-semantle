@@ -10,7 +10,7 @@
     import { gameStateStore } from "../stores";
 
     const dispatch =
-        createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
+        createEventDispatcher<{ successfulWordGuess: { wg: WordGuess }, badWordGuess: { error: string } }>();
 
     export let guessedWord: string;
     export let currentGuessIdx: number;
@@ -25,6 +25,8 @@
     ).then((wgr) => {
         if (typeof wgr !== "string") {
             dispatch("successfulWordGuess", { wg: wgr });
+        } else {
+            dispatch("badWordGuess", { error: wgr });
         }
         return wgr;
     });

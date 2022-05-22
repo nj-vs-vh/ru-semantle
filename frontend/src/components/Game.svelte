@@ -43,14 +43,16 @@
             );
     }
 
-    const nextToAnswerIndex = (wgs: WordGuess[]): number => {
-        let i = wgs.findIndex((wg) => wg.rating === 1) + 1;
-        if (i === 0) i = wgs.length;
-        return i;
-    };
-    $: nGuessesUntilAnswer = currentWordGuesses
-        .slice(0, nextToAnswerIndex(currentWordGuesses))
-        .filter((wg) => wg.idx !== undefined).length;
+    let nGuessesUntilAnswer: number;
+    $: {
+        let nextToAnswerIdx =
+            currentWordGuesses.findIndex((wg) => wg.rating === 1) + 1;
+        if (nextToAnswerIdx === 0) nextToAnswerIdx = currentWordGuesses.length;
+
+        nGuessesUntilAnswer = currentWordGuesses
+            .slice(0, nextToAnswerIdx)
+            .filter((wg) => wg.idx !== undefined).length;
+    }
 
     // current user input state storage
     let currentGuessedWord: string | null = null;
@@ -118,7 +120,7 @@
     }
 </script>
 
-<div class="page-text-block top-margin">
+<div class="page-text-block">
     <GameIntro nGuesses={nGuessesUntilAnswer} {withHints} />
     <UserInput
         on:guess={onNewWordGuessed}
@@ -134,6 +136,9 @@
             {currentGuessIdx}
             {alreadyExistingWordGuess}
             on:successfulWordGuess={(e) => onSuccessfulWordGuess(e.detail.wg)}
+            on:badWordGuess={(e) => {
+                currentGuessIdx = Math.max(currentGuessIdx - 1, 0);
+            }}
         />
     {/if}
     <WordTable header={true}>
@@ -142,9 +147,3 @@
         {/each}
     </WordTable>
 </div>
-
-<style>
-    .top-margin {
-        margin-top: 3vh;
-    }
-</style>
