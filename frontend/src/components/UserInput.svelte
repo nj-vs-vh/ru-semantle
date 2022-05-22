@@ -11,32 +11,27 @@
     let suggestion = "";
     let suggestionsLoopRunning = true;
 
+    const checkSuggestionsLoopRunning = () => {
+        if (!suggestionsLoopRunning) {
+            suggestion = "";
+            throw Error;
+        }
+    };
+
     async function typeSuggestion(newSuggestion: string) {
         const betweenStrokesSec = 0.1;
         while (!newSuggestion.includes(suggestion)) {
             suggestion = suggestion.slice(0, suggestion.length - 1);
-            if (!suggestionsLoopRunning) {
-                suggestion = "";
-                return;
-            }
+            checkSuggestionsLoopRunning();
             await sleep(betweenStrokesSec);
-            if (!suggestionsLoopRunning) {
-                suggestion = "";
-                return;
-            }
+            checkSuggestionsLoopRunning();
         }
         let idx = suggestion.length;
         while (idx < newSuggestion.length) {
             suggestion += newSuggestion[idx];
-            if (!suggestionsLoopRunning) {
-                suggestion = "";
-                return;
-            }
+            checkSuggestionsLoopRunning();
             await sleep(betweenStrokesSec);
-            if (!suggestionsLoopRunning) {
-                suggestion = "";
-                return;
-            }
+            checkSuggestionsLoopRunning();
             idx += 1;
         }
     }
@@ -44,21 +39,23 @@
     async function suggestWords() {
         let randomWords: string[] = [];
         while (true) {
-            await sleep(60);
+            await sleep(90);
             suggestionsLoopRunning = true;
-            while (true) {
-                // suggestions loop, interrupted by new guesses
-                await sleep(10);
-                if (randomWords.length == 0) {
-                    randomWords = await getRandomWords();
-                    if (randomWords === null) {
-                        return; // error occured, something's wrong
+            try {
+                while (true) {
+                    await sleep(15);
+                    if (randomWords.length == 0) {
+                        randomWords = await getRandomWords();
+                        if (randomWords === null) {
+                            return;
+                        }
                     }
+                    checkSuggestionsLoopRunning();
+                    await typeSuggestion(`например, ${randomWords.pop()}`);
+                    checkSuggestionsLoopRunning();
                 }
-                if (!suggestionsLoopRunning) {
-                    break;
-                }
-                await typeSuggestion(`например, ${randomWords.pop()}`);
+            } catch (Error) {
+                continue;
             }
         }
     }
@@ -106,7 +103,14 @@
         >
     </div>
 </div>
-<UserMenu wrapped={userMenuWrapped} on:hint on:giveUp on:showAllTop on:history on:map />
+<UserMenu
+    wrapped={userMenuWrapped}
+    on:hint
+    on:giveUp
+    on:showAllTop
+    on:history
+    on:map
+/>
 
 <style>
     .container {
@@ -143,6 +147,7 @@
     }
     #guessButton {
         min-width: 70%;
+        min-height: 5vh;
         flex-grow: 3;
     }
 </style>

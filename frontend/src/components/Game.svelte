@@ -14,45 +14,65 @@
         loadStoredWordGuesses,
         addWordGuessToStorage,
     } from "../storage";
-    import type { GameMetadata, WordGuess } from "../types";
+    import { GameMetadata, GameState, WordGuess } from "../types";
     import { getHint, getTopWords } from "../api";
-    import { isGameWonStore } from "../stores";
+    import { gameStateStore } from "../stores";
 
     let metadata: GameMetadata = getContext("metadata");
 
     const { open } = getContext("simple-modal");
 
+    // main app state: list of current WordGuess object
     let currentWordGuesses: WordGuess[] = [];
     $: sortedWordGuesses = [...currentWordGuesses].sort(
         (wg1, wg2) => wg2.similarity - wg1.similarity
     );
     ensureUpToDateStoredData(metadata.game_number);
     currentWordGuesses = loadStoredWordGuesses();
-    let currentLastGuessIdx = Math.max.apply(
+    let withHints =
+        currentWordGuesses.filter((wg) => wg.idx === undefined).length > 0;
+
+    // inferring game state from word guesses
+    if (currentWordGuesses.length > 0) {
+        const wgs = [...currentWordGuesses].sort(
+            (wg1, wg2) => wg2.similarity - wg1.similarity
+        );
+        if (wgs[0].rating === 1)
+            gameStateStore.set(
+                wgs[0].idx !== undefined ? GameState.WON : GameState.LOST
+            );
+    }
+
+    const nextToAnswerIndex = (wgs: WordGuess[]): number => {
+        let i = wgs.findIndex((wg) => wg.rating === 1) + 1;
+        if (i === 0) i = wgs.length;
+        return i;
+    };
+    $: nGuessesUntilAnswer = currentWordGuesses
+        .slice(0, nextToAnswerIndex(currentWordGuesses))
+        .filter((wg) => wg.idx !== undefined).length;
+
+    // current user input state storage
+    let currentGuessedWord: string | null = null;
+    let alreadyExistingWordGuess: WordGuess | null = null;
+    let currentGuessIdx: number = Math.max.apply(
         Math,
         currentWordGuesses
             .map((wg) => wg.idx)
             .filter((idx) => idx !== undefined)
     );
-    if (currentLastGuessIdx < 0) {
-        currentLastGuessIdx = 0;
+    if (currentGuessIdx < 0) {
+        currentGuessIdx = 0;
     }
 
-    if (
-        currentWordGuesses.length > 0 &&
-        Math.min.apply(
-            Math,
-            currentWordGuesses
-                .map((wg) => wg.rating)
-                .filter((r) => r !== undefined)
-        ) === 1
-    )
-        isGameWonStore.set(true);
-
-    let newGuessedWord: string = null;
     function onNewWordGuessed(e: CustomEvent<{ word: string }>) {
-        newGuessedWord = e.detail.word;
-        currentLastGuessIdx += 1;
+        const newGuessedWord = e.detail.word;
+        alreadyExistingWordGuess =
+            currentWordGuesses.filter(
+                (wg) => wg.word == newGuessedWord.toLowerCase()
+            )[0] || null;
+        currentGuessedWord = newGuessedWord;
+        currentGuessIdx += alreadyExistingWordGuess === null ? 1 : 0;
     }
 
     function onSuccessfulWordGuess(
@@ -68,6 +88,11 @@
         }
     }
 
+    function fakeWordGuess(wg: WordGuess) {
+        alreadyExistingWordGuess = wg;
+        currentGuessedWord = wg.word;
+    }
+
     function onHint(e: CustomEvent<null>) {
         let currentBestRating: number | undefined | null;
         try {
@@ -76,26 +101,25 @@
             currentBestRating = null;
         }
         getHint(currentBestRating).then((wg) => {
-            if (wg !== null) onSuccessfulWordGuess(wg);
+            if (wg !== null) fakeWordGuess(wg);
         });
     }
 
     function giveUp(allTopWords: boolean) {
-        isGameWonStore.set(true);
         getTopWords().then((topWords) => {
             if (topWords !== null) {
                 if (allTopWords)
                     for (let tw of topWords) {
                         onSuccessfulWordGuess(tw, false);
                     }
-                else onSuccessfulWordGuess(topWords[0]);
+                else fakeWordGuess(topWords[0]);
             }
         });
     }
 </script>
 
 <div class="page-text-block top-margin">
-    <GameIntro />
+    <GameIntro nGuesses={nGuessesUntilAnswer} {withHints} />
     <UserInput
         on:guess={onNewWordGuessed}
         on:hint={onHint}
@@ -104,10 +128,11 @@
         on:map={() => open(MapModal, { words: currentWordGuesses })}
         on:history={() => open(HistoryModal, { words: currentWordGuesses })}
     />
-    {#if newGuessedWord != null}
+    {#if currentGuessedWord != null}
         <NewGuessedWord
-            guessedWord={newGuessedWord}
-            currentGuessIdx={currentLastGuessIdx}
+            guessedWord={currentGuessedWord}
+            {currentGuessIdx}
+            {alreadyExistingWordGuess}
             on:successfulWordGuess={(e) => onSuccessfulWordGuess(e.detail.wg)}
         />
     {/if}

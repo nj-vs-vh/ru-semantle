@@ -1,13 +1,15 @@
 <script lang="ts">
     import { createEventDispatcher, getContext } from "svelte";
-import { isGameWonStore } from "../../stores";
-    import type { GameMetadata } from "../../types";
+    import { gameStateStore } from "../../stores";
+    import { GameMetadata, GameState } from "../../types";
 
     export let wrapped: boolean;
 
     let metadata: GameMetadata = getContext("metadata");
-    let isGameWon;
-    isGameWonStore.subscribe(v => {isGameWon = v});
+    let isGameFinished: boolean;
+    gameStateStore.subscribe((gameState) => {
+        isGameFinished = gameState !== GameState.IN_PROGRESS;
+    });
 
     const dispatch = createEventDispatcher<{
         hint: null;
@@ -24,11 +26,13 @@ import { isGameWonStore } from "../../stores";
     <button class="btn-secondary" on:click={() => dispatch("hint")}
         >Подсказка</button
     >
-    <button class="btn-secondary" on:click={() => dispatch(isGameWon ? "showAllTop" : "giveUp")}>
-        {isGameWon
-            ? `Посмотреть топ-${metadata.config.n_top_words}`
-            : "Сдаться"
-        }
+    <button
+        class="btn-secondary"
+        on:click={() => dispatch(isGameFinished ? "showAllTop" : "giveUp")}
+    >
+        {isGameFinished
+            ? `Топ-${metadata.config.n_top_words}`
+            : "Сдаться"}
     </button>
     <button class="btn-secondary" on:click={() => dispatch("history")}
         >История</button
@@ -57,5 +61,6 @@ import { isGameWonStore } from "../../stores";
 
     button {
         width: 23%;
+        min-height: 5vh;
     }
 </style>

@@ -4,14 +4,13 @@ export interface WordGuess {
     similarity: number,
     rating?: number,
     local_coords?: [number, number],
-    guessedAt?: string
+    guessedAt?: string,
 }
-
 
 type WordGuessError = string;
 
-
 export type WordGuessResult = WordGuess | WordGuessError;
+
 
 interface GameConfig {
     n_top_words: number,
@@ -25,8 +24,15 @@ interface GameClues {
     last_top_word_similarity: number,
 }
 
-export interface GameMetadata { 
+export interface GameMetadata {
     game_number: number,
     config: GameConfig,
     clues: GameClues,
+}
+
+
+export enum GameState {
+    IN_PROGRESS = 1,
+    WON,
+    LOST,
 }

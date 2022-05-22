@@ -6,26 +6,35 @@
 
     import { guessWord } from "../api";
     import { createEventDispatcher } from "svelte";
-    import type { WordGuess } from "../types";
-    import { isGameWonStore } from "../stores";
+    import { GameState, WordGuess } from "../types";
+    import { gameStateStore } from "../stores";
 
     const dispatch =
         createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
 
     export let guessedWord: string;
     export let currentGuessIdx: number;
+    export let alreadyExistingWordGuess: WordGuess | null = null;
 
-    $: wordGuessPromise = guessWord(guessedWord, currentGuessIdx).then((wgr) => {
+    $: wordGuessPromise = (
+        alreadyExistingWordGuess === null
+            ? guessWord(guessedWord, currentGuessIdx)
+            : new Promise<WordGuess>((resolve, reject) =>
+                  resolve(alreadyExistingWordGuess)
+              )
+    ).then((wgr) => {
         if (typeof wgr !== "string") {
             dispatch("successfulWordGuess", { wg: wgr });
         }
         return wgr;
     });
 
-    async function gameWon() {
-        isGameWonStore.set(true);
-        // @ts-ignore
-        return window.confetti({ particleCount: 100, spread: 70 });
+    async function answerFound(byUser: boolean) {
+        gameStateStore.set(byUser ? GameState.WON : GameState.LOST);
+        if (byUser) {
+            // @ts-ignore
+            return window.confetti({ particleCount: 100, spread: 70 });
+        }
     }
 </script>
 
@@ -39,7 +48,7 @@
             <WordRow wordGuess={wordGuessResult} />
         </WordTable>
     {:else}
-        {#await gameWon()}
+        {#await answerFound(wordGuessResult.idx !== undefined)}
             <div />
         {/await}
     {/if}

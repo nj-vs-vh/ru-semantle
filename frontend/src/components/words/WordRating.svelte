@@ -1,5 +1,6 @@
 <script lang="ts">
     import { getContext } from "svelte";
+
     import type { GameMetadata } from "../../types";
     import { pickRandom } from "../../utils";
 

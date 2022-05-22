@@ -10,8 +10,8 @@
     div {
         padding: 10px 15px;
         margin: 5px 0;
-        background-color: rgb(255, 239, 238);
-        border: 2px solid rgb(254, 121, 114);
+        background-color: #fffaf9;
+        border: 1.5px solid #ff6c89;
         border-radius: 5px;
     }
 </style>
