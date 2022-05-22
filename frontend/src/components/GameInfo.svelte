@@ -18,7 +18,7 @@
 
 <div>
     <h2>
-        <span>Слово #{gameMetadata.game_number}</span>
+        <span id="word">Слово #{gameMetadata.game_number}</span>
         {#if gameState === GameState.WON}
             <span class="game-result win">
                 отгадано с <strong>{nGuesses}</strong> попытки {withHints
@@ -56,10 +56,17 @@
 </div>
 
 <style>
+    h2 {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    #word {
+        margin-right: 0.5em;
+    }
     .game-result {
         font-weight: 300;
-        margin-left: 0.5em;
         border: 1px solid black;
+        margin-top: 0.2em;
         padding: 0.2em 0.6em;
         border-radius: 5px;
     }

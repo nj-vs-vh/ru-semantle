@@ -29,6 +29,7 @@
         border-right: solid #ddd 1px;
         padding: 0 2vw;
         text-align: left;
+        font-size: small;
     }
 
     #index {
