@@ -24,7 +24,7 @@
     });
 </script>
 
-<div class="container">
+<div>
     <h3>История</h3>
     {#if timestampedWords.length > 0}
         <div id="plotly" bind:this={plotlyCanvas} />
@@ -37,10 +37,6 @@
 </div>
 
 <style>
-    .container {
-        width: 90vw;
-    }
-
     #plotly {
         width: 100%;
         min-height: 600px;
