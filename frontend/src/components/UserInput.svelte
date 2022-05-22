@@ -127,6 +127,7 @@
         margin-right: 4px;
         min-width: 0;
         text-overflow: ellipsis;
+        padding-left: 0.5em;
     }
 
     input::placeholder {
@@ -143,7 +144,7 @@
     }
 
     button {
-        margin-right: 4px;
+        margin-right: 6px;
     }
     #guessButton {
         min-width: 70%;

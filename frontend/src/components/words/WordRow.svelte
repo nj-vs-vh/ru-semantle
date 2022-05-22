@@ -27,9 +27,9 @@
 
     td {
         border-right: solid #ddd 1px;
-        padding: 0 2vw;
+        padding: 0 1vw;
         text-align: left;
-        font-size: small;
+        font-size: 1rem;
     }
 
     #index {

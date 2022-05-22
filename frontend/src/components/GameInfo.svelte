@@ -59,25 +59,21 @@
     h2 {
         display: flex;
         flex-wrap: wrap;
+        align-items: baseline;
     }
     #word {
         margin-right: 0.5em;
     }
     .game-result {
         font-weight: 300;
-        border: 1px solid black;
         margin-top: 0.2em;
-        padding: 0.2em 0.6em;
-        border-radius: 5px;
     }
 
     .win {
-        border-color: #3fa83a;
-        background-color: #edfbf7;
+        background: radial-gradient(closest-side, #edfbf7, transparent);
     }
 
     .lose {
-        border-color: #ff6c89;
-        background-color: #fffaf9;
+        background: radial-gradient(closest-side, #fffaf9, transparent);
     }
 </style>

@@ -61,6 +61,7 @@
 
     button {
         width: 23%;
-        min-height: 5vh;
+        min-height: 7vh;
+        overflow-wrap: anywhere;
     }
 </style>
