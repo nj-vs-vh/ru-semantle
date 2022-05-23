@@ -74,7 +74,7 @@
         nextGuessIdx = 1;
     }
 
-    function onNewGuessedWord(e: CustomEvent<{ word: string }>) {
+    function onNewWordGuessInput(e: CustomEvent<{ word: string }>) {
         const newGuessedWord = e.detail.word;
         alreadyExistingWordGuess =
             currentWordGuesses.filter(
@@ -100,7 +100,7 @@
         }
     }
 
-    function fakeWordGuess(wg: WordGuess) {
+    function fakeWordGuessInput(wg: WordGuess) {
         alreadyExistingWordGuess = wg;
         wordGuessInput = { word: wg.word };
     }
@@ -113,7 +113,7 @@
             currentBestRating = null;
         }
         getHint(currentBestRating).then((wg) => {
-            if (wg !== null) fakeWordGuess(wg);
+            if (wg !== null) fakeWordGuessInput(wg);
         });
     }
 
@@ -124,7 +124,7 @@
                     for (let tw of topWords) {
                         onSuccessfulWordGuess(tw, false);
                     }
-                else fakeWordGuess(topWords[0]);
+                else fakeWordGuessInput(topWords[0]);
             }
         });
     }
@@ -133,7 +133,7 @@
 <div class="page-text-block">
     <GameIntro nGuesses={nGuessesUntilAnswer} {withHints} />
     <UserInput
-        on:guess={onNewGuessedWord}
+        on:guess={onNewWordGuessInput}
         on:hint={onHint}
         on:giveUp={() => giveUp(false)}
         on:showAllTop={() => giveUp(true)}
