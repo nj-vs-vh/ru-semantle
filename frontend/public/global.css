@@ -85,7 +85,7 @@ button {
 #play {
 	font-weight: 600;
 	padding: 2vh 4vh;
-	margin-top: 4vh;
+	margin: 4vh 0;
 }
 
 #play:hover {
