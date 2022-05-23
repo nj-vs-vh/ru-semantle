@@ -137,6 +137,7 @@
             {alreadyExistingWordGuess}
             on:successfulWordGuess={(e) => onSuccessfulWordGuess(e.detail.wg)}
             on:badWordGuess={(e) => {
+                currentGuessedWord = null;
                 currentGuessIdx = Math.max(currentGuessIdx - 1, 0);
             }}
         />
