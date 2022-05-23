@@ -14,7 +14,12 @@
         loadStoredWordGuesses,
         addWordGuessToStorage,
     } from "../storage";
-    import { GameMetadata, GameState, WordGuess } from "../types";
+    import {
+        GameMetadata,
+        GameState,
+        WordGuess,
+        WordGuessInput,
+    } from "../types";
     import { getHint, getTopWords } from "../api";
     import { gameStateStore } from "../stores";
 
@@ -55,37 +60,41 @@
     }
 
     // current user input state storage
-    let currentGuessedWord: string | null = null;
+    let wordGuessInput: WordGuessInput | null = null;
     let alreadyExistingWordGuess: WordGuess | null = null;
-    let nextGuessIdx: number = 1 + Math.max.apply(
-        Math,
-        currentWordGuesses
-            .map((wg) => wg.idx)
-            .filter((idx) => idx !== undefined)
-    );
+    let nextGuessIdx: number =
+        1 +
+        Math.max.apply(
+            Math,
+            currentWordGuesses
+                .map((wg) => wg.idx)
+                .filter((idx) => idx !== undefined)
+        );
     if (nextGuessIdx < 1) {
         nextGuessIdx = 1;
     }
 
-    function onNewWordGuessed(e: CustomEvent<{ word: string }>) {
+    function onNewGuessedWord(e: CustomEvent<{ word: string }>) {
         const newGuessedWord = e.detail.word;
         alreadyExistingWordGuess =
             currentWordGuesses.filter(
                 (wg) => wg.word == newGuessedWord.toLowerCase()
             )[0] || null;
-        currentGuessedWord = newGuessedWord;
+        wordGuessInput = { word: newGuessedWord, idx: nextGuessIdx };
     }
 
     function onSuccessfulWordGuess(
         newWordGuess: WordGuess,
         persist: boolean = true
     ) {
+        console.log("Successfull word guess fired")
         const currentWords = currentWordGuesses.map((wg) => wg.word);
-        currentGuessedWord = null;
         if (!currentWords.includes(newWordGuess.word)) {
+            console.log("New word not met before")
             nextGuessIdx += 1;
             currentWordGuesses = [...currentWordGuesses, newWordGuess];
             if (persist) {
+                console.log("Presisting")
                 addWordGuessToStorage(newWordGuess);
             }
         }
@@ -93,7 +102,7 @@
 
     function fakeWordGuess(wg: WordGuess) {
         alreadyExistingWordGuess = wg;
-        currentGuessedWord = wg.word;
+        wordGuessInput = { word: wg.word };
     }
 
     function onHint(e: CustomEvent<null>) {
@@ -124,17 +133,16 @@
 <div class="page-text-block">
     <GameIntro nGuesses={nGuessesUntilAnswer} {withHints} />
     <UserInput
-        on:guess={onNewWordGuessed}
+        on:guess={onNewGuessedWord}
         on:hint={onHint}
         on:giveUp={() => giveUp(false)}
         on:showAllTop={() => giveUp(true)}
         on:map={() => open(MapModal, { words: currentWordGuesses })}
         on:history={() => open(HistoryModal, { words: currentWordGuesses })}
     />
-    {#if currentGuessedWord != null}
+    {#if wordGuessInput != null}
         <NewGuessedWord
-            guessedWord={currentGuessedWord}
-            guessIdx={nextGuessIdx}
+            input={wordGuessInput}
             {alreadyExistingWordGuess}
             on:successfulWordGuess={(e) => onSuccessfulWordGuess(e.detail.wg)}
         />

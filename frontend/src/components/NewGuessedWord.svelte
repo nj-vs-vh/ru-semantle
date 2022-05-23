@@ -6,19 +6,18 @@
 
     import { guessWord } from "../api";
     import { createEventDispatcher } from "svelte";
-    import { GameState, WordGuess } from "../types";
+    import { GameState, WordGuess, WordGuessInput } from "../types";
     import { gameStateStore } from "../stores";
 
     const dispatch =
         createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
 
-    export let guessedWord: string;
-    export let guessIdx: number;
+    export let input: WordGuessInput;
     export let alreadyExistingWordGuess: WordGuess | null = null;
 
     $: wordGuessPromise =
         alreadyExistingWordGuess === null
-            ? guessWord(guessedWord, guessIdx).then((wgr) => {
+            ? guessWord(input.word, input.idx).then((wgr) => {
                   if (typeof wgr !== "string") {
                       dispatch("successfulWordGuess", { wg: wgr });
                   }

@@ -1,6 +1,9 @@
-export interface WordGuess {
-    idx?: number,
-    word: string,
+export interface WordGuessInput {
+    word: string;
+    idx?: number;
+}
+
+export interface WordGuess extends WordGuessInput {
     similarity: number,
     rating?: number,
     local_coords?: [number, number],
