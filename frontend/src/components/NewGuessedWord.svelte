@@ -13,12 +13,12 @@
         createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
 
     export let guessedWord: string;
-    export let currentGuessIdx: number;
+    export let guessIdx: number;
     export let alreadyExistingWordGuess: WordGuess | null = null;
 
     $: wordGuessPromise =
         alreadyExistingWordGuess === null
-            ? guessWord(guessedWord, currentGuessIdx).then((wgr) => {
+            ? guessWord(guessedWord, guessIdx).then((wgr) => {
                   if (typeof wgr !== "string") {
                       dispatch("successfulWordGuess", { wg: wgr });
                   }

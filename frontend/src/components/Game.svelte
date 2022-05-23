@@ -81,6 +81,7 @@
         persist: boolean = true
     ) {
         const currentWords = currentWordGuesses.map((wg) => wg.word);
+        currentGuessedWord = null;
         if (!currentWords.includes(newWordGuess.word)) {
             nextGuessIdx += 1;
             currentWordGuesses = [...currentWordGuesses, newWordGuess];
@@ -133,7 +134,7 @@
     {#if currentGuessedWord != null}
         <NewGuessedWord
             guessedWord={currentGuessedWord}
-            currentGuessIdx={nextGuessIdx}
+            guessIdx={nextGuessIdx}
             {alreadyExistingWordGuess}
             on:successfulWordGuess={(e) => onSuccessfulWordGuess(e.detail.wg)}
         />
