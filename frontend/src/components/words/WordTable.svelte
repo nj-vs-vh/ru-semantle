@@ -17,7 +17,7 @@
 <style>
     th {
         border-right: solid #ddd 1px;
-        padding: 0 2vw;
+        padding: 0 1vw;
         text-overflow: ellipsis;
         font-weight: 300;
         font-size: small;

@@ -28,12 +28,8 @@
         if (topWords.length > 0) {
             const notAnswer = (wg: WordGuess) => wg.rating !== 1;
             datasets.push({
-                x: topWords
-                    .filter(notAnswer)
-                    .map((wg) => wg.local_coords[0]),
-                y: topWords
-                    .filter(notAnswer)
-                    .map((wg) => wg.local_coords[1]),
+                x: topWords.filter(notAnswer).map((wg) => wg.local_coords[0]),
+                y: topWords.filter(notAnswer).map((wg) => wg.local_coords[1]),
                 type: "scatter",
                 name: "",
                 mode: "markers+text",
@@ -55,6 +51,7 @@
             yaxis: {
                 range: [-1, 1],
             },
+            margin: { b: 0, l: 0, r: 0, t: 0 },
         });
     });
 </script>
