@@ -10,26 +10,23 @@
     import { gameStateStore } from "../stores";
 
     const dispatch =
-        createEventDispatcher<{ successfulWordGuess: { wg: WordGuess }, badWordGuess: { error: string } }>();
+        createEventDispatcher<{ successfulWordGuess: { wg: WordGuess } }>();
 
     export let guessedWord: string;
     export let currentGuessIdx: number;
     export let alreadyExistingWordGuess: WordGuess | null = null;
 
-    $: wordGuessPromise = (
+    $: wordGuessPromise =
         alreadyExistingWordGuess === null
-            ? guessWord(guessedWord, currentGuessIdx)
+            ? guessWord(guessedWord, currentGuessIdx).then((wgr) => {
+                  if (typeof wgr !== "string") {
+                      dispatch("successfulWordGuess", { wg: wgr });
+                  }
+                  return wgr;
+              })
             : new Promise<WordGuess>((resolve, reject) =>
                   resolve(alreadyExistingWordGuess)
-              )
-    ).then((wgr) => {
-        if (typeof wgr !== "string") {
-            dispatch("successfulWordGuess", { wg: wgr });
-        } else {
-            dispatch("badWordGuess", { error: wgr });
-        }
-        return wgr;
-    });
+              );
 
     async function answerFound(byUser: boolean) {
         gameStateStore.set(byUser ? GameState.WON : GameState.LOST);

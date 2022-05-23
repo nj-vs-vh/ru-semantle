@@ -57,14 +57,14 @@
     // current user input state storage
     let currentGuessedWord: string | null = null;
     let alreadyExistingWordGuess: WordGuess | null = null;
-    let currentGuessIdx: number = Math.max.apply(
+    let nextGuessIdx: number = 1 + Math.max.apply(
         Math,
         currentWordGuesses
             .map((wg) => wg.idx)
             .filter((idx) => idx !== undefined)
     );
-    if (currentGuessIdx < 0) {
-        currentGuessIdx = 0;
+    if (nextGuessIdx < 1) {
+        nextGuessIdx = 1;
     }
 
     function onNewWordGuessed(e: CustomEvent<{ word: string }>) {
@@ -74,7 +74,6 @@
                 (wg) => wg.word == newGuessedWord.toLowerCase()
             )[0] || null;
         currentGuessedWord = newGuessedWord;
-        currentGuessIdx += alreadyExistingWordGuess === null ? 1 : 0;
     }
 
     function onSuccessfulWordGuess(
@@ -83,6 +82,7 @@
     ) {
         const currentWords = currentWordGuesses.map((wg) => wg.word);
         if (!currentWords.includes(newWordGuess.word)) {
+            nextGuessIdx += 1;
             currentWordGuesses = [...currentWordGuesses, newWordGuess];
             if (persist) {
                 addWordGuessToStorage(newWordGuess);
@@ -133,13 +133,9 @@
     {#if currentGuessedWord != null}
         <NewGuessedWord
             guessedWord={currentGuessedWord}
-            {currentGuessIdx}
+            currentGuessIdx={nextGuessIdx}
             {alreadyExistingWordGuess}
             on:successfulWordGuess={(e) => onSuccessfulWordGuess(e.detail.wg)}
-            on:badWordGuess={(e) => {
-                currentGuessedWord = null;
-                currentGuessIdx = Math.max(currentGuessIdx - 1, 0);
-            }}
         />
     {/if}
     <WordTable header={true}>
