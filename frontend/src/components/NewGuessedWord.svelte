@@ -15,17 +15,18 @@
     export let input: WordGuessInput;
     export let alreadyExistingWordGuess: WordGuess | null = null;
 
-    $: wordGuessPromise =
+    $: wordGuessPromise = (
         alreadyExistingWordGuess === null
-            ? guessWord(input.word, input.idx).then((wgr) => {
-                  if (typeof wgr !== "string") {
-                      dispatch("successfulWordGuess", { wg: wgr });
-                  }
-                  return wgr;
-              })
+            ? guessWord(input.word, input.idx)
             : new Promise<WordGuess>((resolve, reject) =>
                   resolve(alreadyExistingWordGuess)
-              );
+              )
+    ).then((wgr) => {
+        if (typeof wgr !== "string") {
+            dispatch("successfulWordGuess", { wg: wgr });
+        }
+        return wgr;
+    });
 
     async function answerFound(byUser: boolean) {
         gameStateStore.set(byUser ? GameState.WON : GameState.LOST);
