@@ -101,6 +101,7 @@
     }
 
     function fakeWordGuessInput(wg: WordGuess) {
+        withHints = true;
         alreadyExistingWordGuess = wg;
         wordGuessInput = { word: wg.word };
     }
