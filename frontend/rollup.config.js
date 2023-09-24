@@ -13,6 +13,7 @@ if (!baseUrl) {
   console.error("Base URL not specified");
   throw new Error();
 }
+baseUrl = `"${baseUrl}"`;
 console.info(`Base URL: ${baseUrl}`);
 
 let version = process.env.GIT_TAG;
