@@ -8,7 +8,7 @@ import typescript from "@rollup/plugin-typescript";
 import css from "rollup-plugin-css-only";
 import replace from "@rollup/plugin-replace";
 
-let baseUrl = process.env.GIT_TAG;
+let baseUrl = process.env.BASE_URL;
 if (!baseUrl) {
   console.error("Base URL not specified");
   throw new Error();
