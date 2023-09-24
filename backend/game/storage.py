@@ -96,6 +96,7 @@ class GameStorage:
             game = json.loads(game_dump.decode("utf-8"))
             assert isinstance(game, list)
             game_number = int(self.redis.get(self.CURRENT_GAME_NUMBER_KEY).decode("utf-8"))
+            logger.info(f"Game loaded, {game_number = }, {game_generated_at = }")
             return game_number, game
         except Exception as e:
             logger.info(f"Error reading game from Redis, generating new one: {e}")

@@ -54,11 +54,14 @@ def get_frequent_words() -> list[str]:
     global _FREQUENT_WORDS_CORPUS
     if _FREQUENT_WORDS_CORPUS is None:
         corpus = set()
-        if not CORPUS_ZIP_FILE.exists():
-            logger.info("Downloading RusCorpora word frequency list...")
-            wget.download(CORPUS_URL, out=str(CORPUS_ZIP_FILE))
-        with zipfile.ZipFile(CORPUS_ZIP_FILE, "r") as zf:
-            zf.extractall(MODELS_DIR)
+        if not CORPUS_FILE.exists():
+            logger.info("No RusCorpora word frequency file...")
+            if not CORPUS_ZIP_FILE.exists():
+                logger.info("Downloading RusCorpora word frequency list...")
+                wget.download(CORPUS_URL, out=str(CORPUS_ZIP_FILE))
+            logger.info(f"Extracting {CORPUS_ZIP_FILE}...")
+            with zipfile.ZipFile(CORPUS_ZIP_FILE, "r") as zf:
+                zf.extractall(MODELS_DIR)
         if not CORPUS_FILE.exists():
             raise RuntimeError("Error downloading and extracting RusCorpora word frequency list")
         wordlike_re = re.compile(r"\w{3,}$")

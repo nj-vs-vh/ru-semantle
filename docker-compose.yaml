@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: . 
+    ports:
+      - '8000:8000'
+    volumes:
+      - .:/app
+    environment:
+      REDIS_URL: redis://redis:6379
+      PORT: 8000
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+    depends_on:
+      - redis
+  redis:
+    image: "redis:alpine"
+  
