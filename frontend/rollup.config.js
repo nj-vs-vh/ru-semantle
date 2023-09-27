@@ -24,6 +24,7 @@ if (!version) {
 console.log(`Building with version ${version}`);
 
 const production = !process.env.ROLLUP_WATCH;
+console.log(`Is production = ${production}`);
 
 function serve() {
   let server;
@@ -61,8 +62,8 @@ export default {
   plugins: [
     replace({
       buildTimeReplacedVersion: version,
-      buildTimeReplacedIsProduction: baseUrl,
-      buildTimeReplacedBaseUrl: production,
+      buildTimeReplacedIsProduction: production,
+      buildTimeReplacedBaseUrl: baseUrl,
       preventAssignment: true,
     }),
     svelte({
