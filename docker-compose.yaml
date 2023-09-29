@@ -13,4 +13,10 @@ services:
       - redis
   redis:
     image: "redis:alpine"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+    driver: local
   

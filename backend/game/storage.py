@@ -21,7 +21,7 @@ class CachedSemantleGame:
 
     game_no: int
     top_word_count: int
-    answer: str
+    answer: TopWord
     top_words: list[TopWord]
     top_words_by_str: dict[str, TopWord]
     cached_on: date
