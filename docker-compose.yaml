@@ -2,7 +2,7 @@ services:
   backend:
     build: . 
     ports:
-      - '16485:8000'
+      - '127.0.0.1:${PORT}:8000'
     volumes:
       - .:/app
     environment:
