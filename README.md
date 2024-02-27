@@ -1,3 +1,3 @@
 # ru-semantle
 
-Russian Semantle clone, play at https://ru-semantle.surge.sh/
+Russian Semantle clone, play at https://ru-semantle.nj-vs-vh.name/
