@@ -28,14 +28,14 @@ def normalize_word(word: str) -> Optional[str]:
             return None
         return parse.normalized.word
     except Exception as e:
-        logger.warning(f"Unexpected error normalizing word '{word}': {e}")
+        logger.warning(f"Unexpected error normalizing word '{word}': {e!r}")
         return None
 
 
 def generate_answer() -> str:
     navec = get_navec_model()
     frequent_words = get_frequent_words()
-    for attempt in range(10000):
+    for attempt in range(1000):
         answer = random.choice(frequent_words)
         answer = normalize_word(answer)
         if answer is not None and answer in navec:
